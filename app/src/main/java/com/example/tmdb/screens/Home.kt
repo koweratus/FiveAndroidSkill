@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -277,6 +278,8 @@ fun RowItem(
 
 }
 
+
+
 @Composable
 fun FavoriteButton(
     modifier: Modifier = Modifier,
@@ -362,6 +365,36 @@ fun createTestDataList(): List<Movies> {
 
 }
 
+fun createTestActorDataList(): List<Actors> {
+    val list = mutableListOf<Actors>()
+
+    list.add(
+        Actors(
+            "Will Smith",
+            "Prince",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/TechCrunch_Disrupt_2019_%2848834434641%29_%28cropped%29.jpg/220px-TechCrunch_Disrupt_2019_%2848834434641%29_%28cropped%29.jpg"
+        )
+    )
+    list.add(
+        Actors(
+            "Jimm iz offica",
+            "Accountant",
+            "https://media1.popsugar-assets.com/files/thumbor/Ld6VWI6qdqqi3gf1dwJIGXHjXGs/996x423:2811x2238/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2019/11/26/962/n/1922283/7c4e4c1f5ddda1a0b324b1.53078688_/i/actors-who-were-almost-cast-as-avengers.jpg"
+        )
+    )
+    list.add(
+        Actors(
+            "Poznati glumac",
+            "Killer",
+            "https://media1.popsugar-assets.com/files/thumbor/MzvXHf8nPs7dDMpZcmuyXxFWrVk/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2019/01/08/691/n/1922398/d00b278d5c34c37b4aebd5.04082562_/i/Actors-You-Thought-Were-American.jpg"
+        )
+    )
+
+    return list
+
+}
+
+
 @Composable
 fun SearchAppBar(
     text: String,
@@ -432,4 +465,8 @@ data class Movies(
     val actors: List<String>,
     val imageUrl: String
 )
-
+data class Actors(
+    val name: String,
+    val roles: String,
+    var imageUrl: String
+)

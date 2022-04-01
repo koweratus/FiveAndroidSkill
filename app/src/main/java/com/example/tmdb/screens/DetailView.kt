@@ -338,7 +338,7 @@ private fun Overview(navController: NavController) {
             )
         }
         SectionTitle("Top Billed Cast")
-        RowSectionItem(list = createTestDataList(),navController)
+        TopBilledCastSectionItem(list = createTestActorDataList(),navController)
         Spacer(Modifier.padding(35.dp))
         SectionTitle("Social")
         Tabs(pagerState = pagerState, listFirstTab)
@@ -598,4 +598,91 @@ fun CircularProgressionBar(
         )
     }
 
+}
+
+@Composable
+fun TopBilledCastItem(
+    moviesData: Actors,
+    navController: NavController
+) {
+
+    Card(
+        modifier = Modifier
+            .size(width = 140.dp, height = 220.dp)
+            .padding(horizontal = 5.dp)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = rememberRipple(bounded = true, color = Color.Black),
+                onClick = { navController.navigate(BottomBarScreen.Details.route) }
+            ),
+        shape = RoundedCornerShape(6.dp),
+        elevation = 15.dp,
+        backgroundColor = Color.White
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .crossfade(true)
+                        .data(moviesData.imageUrl)
+                        .build(),
+                    filterQuality = FilterQuality.High,
+                    contentScale = ContentScale.Crop
+
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth().height(140.dp)
+                    .clip(shape = RoundedCornerShape(6.dp)),
+                contentScale = ContentScale.Crop,
+
+                )
+            Text(
+                modifier = Modifier
+                    .padding(top = 6.dp, start = 6.dp, end = 6.dp),
+                text = moviesData.name,
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
+                color = Color.Black
+            )
+            Text(
+                modifier = Modifier
+                    .padding(top = 6.dp, start = 6.dp, end = 6.dp),
+                text = moviesData.roles,
+                fontSize = 12.sp,
+                fontFamily = FontFamily(Font(R.font.proximanova_regular)),
+                color = Color.Black
+            )
+        }
+    }
+
+
+}
+@ExperimentalPagerApi
+@Composable
+fun TopBilledCastSectionItem(
+    list: List<Actors>,
+    navController: NavController?
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(top = 20.dp)
+    ) {
+        LazyRow(
+            state = rememberLazyListState(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(top = 5.dp, start = 16.dp)
+        ) {
+            items(
+                items = list
+            ) { item ->
+                navController?.let { TopBilledCastItem(moviesData = item, it) }
+            }
+        }
+    }
 }
