@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Tmdb</string>
+    <string name="streaming">Streaming</string>
+    <string name="onTv">On Tv</string>
+    <string name="inTheaters">In Theaters</string>
+    <string name="movies">Movies</string>
+    <string name="tv">Tv</string>
+    <string name="today">Today</string>
+    <string name="thisWeek">This Week</string>
+    <string name="whatsPopular">What\'s popular</string>
+    <string name="freeToWatch">Free to Watch</string>
+    <string name="trending">Trending</string>
+    <string name="discussions">Discussions</string>
+    <string name="reviews">Reviews</string>
+    <string name="favs">Favourites</string>
+    <string name="search">Search</string>
 </resources>

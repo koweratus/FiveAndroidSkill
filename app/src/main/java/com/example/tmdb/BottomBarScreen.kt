@@ -22,4 +22,9 @@ sealed class BottomBarScreen(
         title = "Favourites",
         icon= Icons.Default.FavoriteBorder
     )
+    object Details: BottomBarScreen(
+        route = "details",
+        title = "Details",
+        icon= Icons.Default.FavoriteBorder
+    )
 }
