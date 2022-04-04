@@ -25,9 +25,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tmdb.ui.theme.TmdbTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 
+@ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
-    @ExperimentalFoundationApi
-    @ExperimentalPagerApi
+    @OptIn(ExperimentalPagerApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
