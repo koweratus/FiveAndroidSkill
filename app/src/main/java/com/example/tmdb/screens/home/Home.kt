@@ -1,15 +1,21 @@
 package com.example.tmdb.screens
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -31,28 +36,48 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.tmdb.BottomBarScreen
 import com.example.tmdb.R
+import com.example.tmdb.screens.home.HomeViewModel
+import com.example.tmdb.utils.Constants.IMAGE_BASE_UR
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
-
 @ExperimentalPagerApi
 @Composable
-fun HomeScreen(navController: NavController) {
-    TabScreen(navController)
+fun HomeScreen(
+) {
 
+    TabScreen(navController = rememberNavController())
 }
 
 @ExperimentalPagerApi
 @Composable
 fun TabScreen(navController: NavController) {
+
+    val viewModel: HomeViewModel = hiltViewModel()
+    val popularMovies = viewModel.popularMovies.value.collectAsLazyPagingItems()
+    val trendingMoviesDay = viewModel.trendingMoviesDay.value.collectAsLazyPagingItems()
+    val trendingMoviesWeek = viewModel.trendingMoviesWeek.value.collectAsLazyPagingItems()
+    val upcomingMovies = viewModel.upcomingMovies.value.collectAsLazyPagingItems()
+    val topRatedMovies = viewModel.topRatedMovies.value.collectAsLazyPagingItems()
+    val nowPlayingMovies = viewModel.nowPlayingMovies.value.collectAsLazyPagingItems()
+
+    val trendingTv = viewModel.trendingTv.value.collectAsLazyPagingItems()
+    val onAirTv = viewModel.onAirTv.value.collectAsLazyPagingItems()
+    val airingTodayTv = viewModel.airingTodayTv.value.collectAsLazyPagingItems()
+    val popularTv = viewModel.popularTv.value.collectAsLazyPagingItems()
+
     val pagerStateFirstTab = rememberPagerState(initialPage = 0)
-    val pagerStateSecondTab = rememberPagerState(initialPage = 1)
-    val pagerStateThirdTab = rememberPagerState(initialPage = 1)
+    val pagerStateSecondTab = rememberPagerState(initialPage = 0)
+    val pagerStateThirdTab = rememberPagerState(initialPage = 0)
     val listFirstTab = listOf(
         stringResource(R.string.streaming), stringResource(R.string.onTv), stringResource(
             R.string.inTheaters
@@ -60,7 +85,6 @@ fun TabScreen(navController: NavController) {
     )
     val listSecondTab = listOf(stringResource(R.string.movies), stringResource(R.string.tv))
     val listThirdTab = listOf(stringResource(R.string.today), stringResource(R.string.thisWeek))
-
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
 
@@ -69,57 +93,77 @@ fun TabScreen(navController: NavController) {
         item {
             Spacer(modifier = Modifier.padding(40.dp))
 
-            SearchAppBar(text = "", onTextChange = {}, onCloseClicked = { /*TODO*/ }, onSearchClicked = {})
+            SearchAppBar(
+                text = "",
+                onTextChange = {},
+                onCloseClicked = { /*TODO*/ },
+                onSearchClicked = {})
             Spacer(modifier = Modifier.padding(20.dp))
 
-            Text(
-                text = stringResource(R.string.whatsPopular),
-                color = colorResource(R.color.purple_700),
-                textAlign = TextAlign.Start,
-                fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
-                fontSize = 24.sp,
-                modifier = Modifier
-                    .padding(start = 16.dp)
-            )
+            SectionText(text = stringResource(R.string.whatsPopular))
             Tabs(pagerState = pagerStateFirstTab, listFirstTab)
-            TabsContent(pagerState = pagerStateFirstTab, listFirstTab.size, navController)
+            when (pagerStateFirstTab.targetPage) {
+                0 -> TabsContent(
+                    pagerState = pagerStateFirstTab,
+                    listFirstTab.size,
+                    popularMovies,
+                    navController
+                )
+                1 -> TabsContent(
+                    pagerState = pagerStateFirstTab,
+                    listFirstTab.size,
+                    popularTv,
+                    navController
+                )
+                2 -> TabsContent(
+                    pagerState = pagerStateFirstTab,
+                    listFirstTab.size,
+                    upcomingMovies,
+                    navController
+                )
+            }
             Spacer(modifier = Modifier.padding(20.dp))
         }
         item {
-            Text(
-                text = stringResource(R.string.freeToWatch),
-                color = colorResource(R.color.purple_700),
-                textAlign = TextAlign.Start,
-                fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
-                fontSize = 24.sp,
-                modifier = Modifier
-                    .padding(start = 16.dp)
-            )
+            SectionText(text = stringResource(R.string.freeToWatch))
             Tabs(pagerState = pagerStateSecondTab, listSecondTab)
-            TabsContent(pagerState = pagerStateSecondTab, listSecondTab.size, navController)
+            when (pagerStateSecondTab.targetPage) {
+                0 -> TabsContent(
+                    pagerState = pagerStateSecondTab,
+                    listSecondTab.size,
+                    nowPlayingMovies, navController
+                )
+                1 -> TabsContent(
+                    pagerState = pagerStateSecondTab,
+                    listSecondTab.size,
+                    onAirTv, navController
+                )
+            }
+
             Spacer(modifier = Modifier.padding(20.dp))
-
-
         }
         item {
-            Text(
-                text = stringResource(R.string.trending),
-                color = colorResource(R.color.purple_700),
-                textAlign = TextAlign.Start,
-                fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
-                fontSize = 24.sp,
-                modifier = Modifier
-                    .padding(start = 16.dp)
-            )
+            stringResource(R.string.trending)
             Tabs(pagerState = pagerStateThirdTab, listThirdTab)
-            TabsContent(pagerState = pagerStateThirdTab, listThirdTab.size, navController)
+            when(pagerStateThirdTab.targetPage){
+                0->  TabsContent(
+                    pagerState = pagerStateThirdTab,
+                    listThirdTab.size,
+                    trendingMoviesDay,
+                    navController
+                )
+                1->  TabsContent(
+                    pagerState = pagerStateThirdTab,
+                    listThirdTab.size,
+                    trendingMoviesWeek,
+                    navController
+                )
+            }
             Spacer(modifier = Modifier.padding(40.dp))
-
         }
 
     }
 }
-
 
 @ExperimentalPagerApi
 @Composable
@@ -143,15 +187,12 @@ fun Tabs(pagerState: PagerState, list: List<String>) {
                     .wrapContentWidth(),
                 height = 3.dp,
                 color = colorResource(R.color.purple_700)
-
             )
-
         },
         edgePadding = 0.dp,
         modifier = Modifier.padding(start = 10.dp)
     ) {
         list.forEachIndexed { index, _ ->
-
             Tab(
                 text = {
                     Text(
@@ -173,31 +214,35 @@ fun Tabs(pagerState: PagerState, list: List<String>) {
                 }
             )
         }
-
     }
 }
 
-
 @ExperimentalPagerApi
 @Composable
-fun TabsContent(pagerState: PagerState, count: Int, navController: NavController) {
-
-    HorizontalPager(count, state = pagerState, verticalAlignment = Alignment.Top) { page ->
+fun <T : Any> TabsContent(
+    pagerState: PagerState,
+    count: Int,
+    list: LazyPagingItems<T>,
+    navController: NavController
+) {
+    HorizontalPager(
+        count,
+        state = pagerState,
+        verticalAlignment = Alignment.Top
+    ) { page ->
         when (page) {
-            0 -> RowSectionItem(list = createTestDataList(), navController = navController)
-            1 -> RowSectionItem(list = createTestDataList(), navController)
-            2 -> RowSectionItem(list = createTestDataList(), navController)
+            0 -> RowSectionItem(list, navController)
+            1 -> RowSectionItem(list, navController)
+            2 -> RowSectionItem(list, navController)
         }
-
     }
-
 }
 
 
 @ExperimentalPagerApi
 @Composable
-fun RowSectionItem(
-    list: List<Movies>,
+fun <T : Any> RowSectionItem(
+    list: LazyPagingItems<T>,
     navController: NavController?
 ) {
     Column(
@@ -217,7 +262,7 @@ fun RowSectionItem(
             items(
                 items = list
             ) { item ->
-                navController?.let { RowItem(moviesData = item, it) }
+                navController?.let { RowItem(posterUrl = item, it) }
             }
         }
     }
@@ -225,10 +270,13 @@ fun RowSectionItem(
 
 @Composable
 fun RowItem(
-    moviesData: Movies,
+    posterUrl: Any?,
     navController: NavController
 ) {
 
+    //get poster whether its movie or tv media
+    val getMediaPosterUrl = posterUrl?.javaClass?.getDeclaredField("posterPath")
+    getMediaPosterUrl?.isAccessible = true
     Card(
         modifier = Modifier
             .size(width = 140.dp, height = 220.dp)
@@ -236,7 +284,8 @@ fun RowItem(
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = rememberRipple(bounded = true, color = Color.Black),
-                onClick = { navController.navigate(BottomBarScreen.Details.route) }
+                onClick = { //navController.navigate(BottomBarScreen.Details.route)
+                }
             ),
         shape = RoundedCornerShape(15.dp),
         elevation = 5.dp
@@ -246,11 +295,10 @@ fun RowItem(
                 painter = rememberAsyncImagePainter(
                     model = ImageRequest.Builder(context = LocalContext.current)
                         .crossfade(true)
-                        .data(moviesData.imageUrl)
+                        .data("$IMAGE_BASE_UR/${getMediaPosterUrl?.get(posterUrl)}")
                         .build(),
                     filterQuality = FilterQuality.High,
                     contentScale = ContentScale.Crop
-
                 ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -274,11 +322,7 @@ fun RowItem(
             )
         }
     }
-
-
 }
-
-
 
 @Composable
 fun FavoriteButton(
@@ -304,96 +348,20 @@ fun FavoriteButton(
             contentDescription = null
         )
     }
-
 }
 
-fun createTestDataList(): List<Movies> {
-    val list = mutableListOf<Movies>()
-    val actors = listOf("Robert Downey Jr.", "Terrance Howard", "Mate Kovilic", "Mi vi oni")
-
-    list.add(
-        Movies(
-            "Iron Man",
-            actors,
-            "https://upload.wikimedia.org/wikipedia/en/0/02/Iron_Man_%282008_film%29_poster.jpg"
-        )
+@Composable
+private fun SectionText(text: String) {
+    Text(
+        text = text,
+        color = colorResource(R.color.purple_700),
+        textAlign = TextAlign.Start,
+        fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
+        fontSize = 24.sp,
+        modifier = Modifier
+            .padding(start = 16.dp)
     )
-    list.add(
-        Movies(
-            "Iron Man 2",
-            actors,
-            "https://upload.wikimedia.org/wikipedia/en/e/ed/Iron_Man_2_poster.jpg"
-        )
-    )
-    list.add(
-        Movies(
-            "Iron Man 3",
-            actors,
-            "https://m.media-amazon.com/images/M/MV5BMjE5MzcyNjk1M15BMl5BanBnXkFtZTcwMjQ4MjcxOQ@@._V1_.jpg"
-        )
-    )
-    list.add(
-        Movies(
-            "Batman 3",
-            actors,
-            "https://m.media-amazon.com/images/M/MV5BMTk4ODQzNDY3Ml5BMl5BanBnXkFtZTcwODA0NTM4Nw@@._V1_FMjpg_UX1000_.jpg"
-        )
-    )
-    list.add(
-        Movies(
-            "Batman 2",
-            actors,
-            "https://upload.wikimedia.org/wikipedia/en/1/1c/The_Dark_Knight_%282008_film%29.jpg"
-        )
-    )
-    list.add(
-        Movies(
-            "Batman",
-            actors,
-            "https://m.media-amazon.com/images/M/MV5BMDdmMTBiNTYtMDIzNi00NGVlLWIzMDYtZTk3MTQ3NGQxZGEwXkEyXkFqcGdeQXVyMzMwOTU5MDk@._V1_.jpg"
-        )
-    )
-    list.add(
-        Movies(
-            "Joker",
-            actors,
-            "https://m.media-amazon.com/images/M/MV5BNGVjNWI4ZGUtNzE0MS00YTJmLWE0ZDctN2ZiYTk2YmI3NTYyXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg"
-        )
-    )
-
-    return list
-
 }
-
-fun createTestActorDataList(): List<Actors> {
-    val list = mutableListOf<Actors>()
-
-    list.add(
-        Actors(
-            "Will Smith",
-            "Prince",
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/TechCrunch_Disrupt_2019_%2848834434641%29_%28cropped%29.jpg/220px-TechCrunch_Disrupt_2019_%2848834434641%29_%28cropped%29.jpg"
-        )
-    )
-    list.add(
-        Actors(
-            "Jimm iz offica",
-            "Accountant",
-            "https://media1.popsugar-assets.com/files/thumbor/Ld6VWI6qdqqi3gf1dwJIGXHjXGs/996x423:2811x2238/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2019/11/26/962/n/1922283/7c4e4c1f5ddda1a0b324b1.53078688_/i/actors-who-were-almost-cast-as-avengers.jpg"
-        )
-    )
-    list.add(
-        Actors(
-            "Poznati glumac",
-            "Killer",
-            "https://media1.popsugar-assets.com/files/thumbor/MzvXHf8nPs7dDMpZcmuyXxFWrVk/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2019/01/08/691/n/1922398/d00b278d5c34c37b4aebd5.04082562_/i/Actors-You-Thought-Were-American.jpg"
-        )
-    )
-
-    return list
-
-}
-
 
 @Composable
 fun SearchAppBar(
@@ -417,25 +385,26 @@ fun SearchAppBar(
             onValueChange = { onTextChange(it) },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
-                Text (
+                Text(
                     modifier = Modifier.alpha(ContentAlpha.medium),
                     text = stringResource(R.string.search),
                     color = Color.White
-                        )
+                )
             },
             textStyle = TextStyle(
                 fontSize = MaterialTheme.typography.subtitle1.fontSize,
 
-            ),
+                ),
             singleLine = true,
             leadingIcon = {
-                IconButton(onClick = {
-                                     if (text.isNotEmpty()){
-                                         onTextChange("")
-                                     }else{
-                                         onCloseClicked()
-                                     }
-                },
+                IconButton(
+                    onClick = {
+                        if (text.isNotEmpty()) {
+                            onTextChange("")
+                        } else {
+                            onCloseClicked()
+                        }
+                    },
                     modifier = Modifier.alpha(ContentAlpha.medium)
                 ) {
                     Icon(
@@ -453,20 +422,9 @@ fun SearchAppBar(
                     onSearchClicked(text)
                 }
             ),
-            colors = TextFieldDefaults.textFieldColors (
+            colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color(R.color.purple_700)
             )
         )
     }
 }
-
-data class Movies(
-    val description: String,
-    val actors: List<String>,
-    val imageUrl: String
-)
-data class Actors(
-    val name: String,
-    val roles: String,
-    var imageUrl: String
-)

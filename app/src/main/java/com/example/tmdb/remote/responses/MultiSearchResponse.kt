@@ -1,7 +1,6 @@
 package com.example.tmdb.remote.responses
 
 import com.example.tmdb.model.Search
-import com.example.tmdb.screens.Movies
 import com.google.gson.annotations.SerializedName
 
 data class MultiSearchResponse (

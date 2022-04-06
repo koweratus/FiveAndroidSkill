@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.room.Room
 import com.example.tmdb.data.local.TmdbDatabase
 import com.example.tmdb.remote.TMDBApi
-import com.example.tmdb.remote.responses.MoviesResponse
 import com.example.tmdb.repository.MoviesRepository
+import com.example.tmdb.repository.TvRepository
 import com.example.tmdb.utils.Constants.BASE_URL
 import com.example.tmdb.utils.Constants.DATABASE_NAME
 import dagger.Module
@@ -22,6 +22,13 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
+
 
     @Provides
     @Singleton
@@ -61,5 +68,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMovieDetailsRepository(api:TMDBApi) = MoviesRepository(api)
+
+    @Provides
+    @Singleton
+    fun provideTvSeriesRepository(api: TMDBApi) = TvRepository(api)
 
 }

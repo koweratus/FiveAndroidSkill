@@ -6,7 +6,7 @@ import com.example.tmdb.utils.Constants.TABLE_NAME
 
 @Entity(tableName = TABLE_NAME)
 data class Favourite(
-     val favorite: Boolean,
+     val favourite: Boolean,
      @PrimaryKey val mediaId: Int,
      val mediaType: String,
      val image:String,

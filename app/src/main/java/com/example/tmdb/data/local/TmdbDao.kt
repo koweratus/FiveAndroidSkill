@@ -18,7 +18,7 @@ interface TmdbDao {
     @Query("SELECT * FROM tmdb_table WHERE mediaId = :mediaId")
     fun getFavourite(mediaId: Int): LiveData<Favourite?>
 
-    @Query("SELECT favorite FROM tmdb_table WHERE mediaId = :mediaId")
+    @Query("SELECT favourite FROM tmdb_table WHERE mediaId = :mediaId")
     fun isFavourite(mediaId: Int):LiveData<Boolean>
 
     @Delete

@@ -47,7 +47,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.BottomBarScreen
 import com.example.tmdb.R
-import com.example.tmdb.ScaffoldWithTopBar
+import com.example.tmdb.model.Movie
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -59,7 +59,6 @@ val boldRegex = Regex("(?<!\\*)\\*\\*(?!\\*).*?(?<!\\*)\\*\\*(?!\\*)")
 @ExperimentalPagerApi
 @Composable
 fun DetailViewScreen(navController: NavController) {
-    ScaffoldWithTopBar(navController)
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -338,13 +337,13 @@ private fun Overview(navController: NavController) {
             )
         }
         SectionTitle("Top Billed Cast")
-        TopBilledCastSectionItem(list = createTestActorDataList(),navController)
+        TopBilledCastSectionItem(list = emptyList(),navController)
         Spacer(Modifier.padding(35.dp))
         SectionTitle("Social")
         Tabs(pagerState = pagerState, listFirstTab)
         TabsContentForSocial(pagerState = pagerState, listFirstTab.size)
         SectionTitle(title = "Recommendations")
-        RowRecommendationsItem(list = createTestDataList(),navController)
+        RowRecommendationsItem(list = emptyList() ,navController)
         Spacer(Modifier.padding(35.dp))
 
     }
@@ -457,8 +456,8 @@ private fun ReviewSection() {
 @ExperimentalPagerApi
 @Composable
 fun RowRecommendationsItem(
-    list: List<Movies>,
-navController: NavController
+    list: List<Movie>,
+    navController: NavController
     ) {
     Column(
         modifier = Modifier
@@ -488,7 +487,7 @@ navController: NavController
 
 @Composable
 private fun RowItemRecommendations(
-    moviesData: Movies,
+    moviesData: Movie,
     navController: NavController
 ) {
     Column(
@@ -500,7 +499,8 @@ private fun RowItemRecommendations(
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(bounded = true, color = Color.Black),
-                    onClick = { navController.navigate(BottomBarScreen.Details.route) }
+                    onClick = {// navController.navigate(BottomBarScreen.Details.route)
+                         }
                 ),
             shape = RoundedCornerShape(15.dp),
             elevation = 5.dp
@@ -510,7 +510,7 @@ private fun RowItemRecommendations(
                     painter = rememberAsyncImagePainter(
                         model = ImageRequest.Builder(context = LocalContext.current)
                             .crossfade(true)
-                            .data(moviesData.imageUrl)
+                            .data(moviesData.posterPath)
                             .build(),
                         filterQuality = FilterQuality.High,
                         contentScale = ContentScale.Crop
@@ -539,7 +539,7 @@ private fun RowItemRecommendations(
         }
 
         Text(
-            text = moviesData.description,
+            text = moviesData.backdropPath,
             color = colorResource(R.color.purple_700),
             textAlign = TextAlign.Start,
             fontFamily = FontFamily(Font(R.font.proximanova_bold)),
@@ -602,7 +602,7 @@ fun CircularProgressionBar(
 
 @Composable
 fun TopBilledCastItem(
-    moviesData: Actors,
+    moviesData: Movie,
     navController: NavController
 ) {
 
@@ -613,7 +613,8 @@ fun TopBilledCastItem(
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = rememberRipple(bounded = true, color = Color.Black),
-                onClick = { navController.navigate(BottomBarScreen.Details.route) }
+                onClick = { //navController.navigate(BottomBarScreen.Details.route)
+                     }
             ),
         shape = RoundedCornerShape(6.dp),
         elevation = 15.dp,
@@ -624,7 +625,7 @@ fun TopBilledCastItem(
                 painter = rememberAsyncImagePainter(
                     model = ImageRequest.Builder(context = LocalContext.current)
                         .crossfade(true)
-                        .data(moviesData.imageUrl)
+                        .data(moviesData.posterPath)
                         .build(),
                     filterQuality = FilterQuality.High,
                     contentScale = ContentScale.Crop
@@ -640,7 +641,7 @@ fun TopBilledCastItem(
             Text(
                 modifier = Modifier
                     .padding(top = 6.dp, start = 6.dp, end = 6.dp),
-                text = moviesData.name,
+                text = moviesData.title,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
                 color = Color.Black
@@ -648,7 +649,7 @@ fun TopBilledCastItem(
             Text(
                 modifier = Modifier
                     .padding(top = 6.dp, start = 6.dp, end = 6.dp),
-                text = moviesData.roles,
+                text = moviesData.backdropPath,
                 fontSize = 12.sp,
                 fontFamily = FontFamily(Font(R.font.proximanova_regular)),
                 color = Color.Black
@@ -661,7 +662,7 @@ fun TopBilledCastItem(
 @ExperimentalPagerApi
 @Composable
 fun TopBilledCastSectionItem(
-    list: List<Actors>,
+    list: List<Movie>,
     navController: NavController?
 ) {
     Column(

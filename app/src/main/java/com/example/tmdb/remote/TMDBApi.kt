@@ -2,10 +2,7 @@ package com.example.tmdb.remote
 
 import com.example.tmdb.BuildConfig
 import com.example.tmdb.BuildConfig.API_KEY
-import com.example.tmdb.remote.responses.CreditsResponse
-import com.example.tmdb.remote.responses.MovieDetails
-import com.example.tmdb.remote.responses.MoviesResponse
-import com.example.tmdb.remote.responses.MultiSearchResponse
+import com.example.tmdb.remote.responses.*
 import com.example.tmdb.utils.Constants.STARTING_PAGE_INDEX
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -15,6 +12,13 @@ interface TMDBApi {
 
     @GET("trending/movie/day")
     suspend fun getTrendingTodayMovies(
+        @Query("page") page: Int = STARTING_PAGE_INDEX,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en"
+    ): MoviesResponse
+
+    @GET("trending/movie/week")
+    suspend fun getTrendingThisWeekMovies(
         @Query("page") page: Int = STARTING_PAGE_INDEX,
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = "en"
@@ -63,6 +67,48 @@ interface TMDBApi {
         @Query("language") language: String = "en"
     ): CreditsResponse
 
+    @GET("trending/tv/day")
+    suspend fun getTrendingTvSeries(
+        @Query("page") page: Int = STARTING_PAGE_INDEX,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en"
+    ): TvResponse
+
+    @GET("tv/top_rated")
+    suspend fun getTopRatedTvSeries(
+        @Query("page") page: Int = STARTING_PAGE_INDEX,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en"
+    ): TvResponse
+
+    @GET("tv/on_the_air")
+    suspend fun getOnTheAirTvSeries(
+        @Query("page") page: Int = STARTING_PAGE_INDEX,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en"
+    ): TvResponse
+
+    @GET("tv/popular")
+    suspend fun getPopularTvSeries(
+        @Query("page") page: Int = STARTING_PAGE_INDEX,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en"
+    ): TvResponse
+
+    @GET("tv/airing_today")
+    suspend fun getAiringTodayTvSeries(
+        @Query("page") page: Int = STARTING_PAGE_INDEX,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en"
+    ): TvResponse
+
+    @GET("tv/{tv_id}")
+    suspend fun getTvSeriesDetails(
+        @Path("tv_id") tvSeriesId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en"
+    ): TvDetails
+
     @GET("tv/{tv_id}/credits")
     suspend fun getTvSeriesCredits(
         @Path("tv_id") tvSeriesId: Int,
@@ -70,11 +116,22 @@ interface TMDBApi {
         @Query("language") language: String = "en"
     ): CreditsResponse
 
-
     @GET("search/multi")
     suspend fun multiSearch(
         @Query("page") page: Int = STARTING_PAGE_INDEX,
         @Query("query") query: String,
         @Query("api_key") apiKey: String = API_KEY
     ): MultiSearchResponse
+
+    @GET("genre/movie/list")
+    suspend fun getMovieGenres(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en"
+    ): GenreResponse
+
+    @GET("genre/tv/list")
+    suspend fun getTvGenres(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = "en"
+    ): GenreResponse
 }
