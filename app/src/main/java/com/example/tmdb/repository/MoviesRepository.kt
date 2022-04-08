@@ -38,14 +38,6 @@ class MoviesRepository @Inject constructor(private val api: TMDBApi) {
         ).flow
     }
 
-    fun getTopRatedMovies(): Flow<PagingData<Movie>> {
-        return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
-            pagingSourceFactory = {
-                TopRatedMoviesSource(api)
-            }
-        ).flow
-    }
 
     fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
         return Pager(

@@ -51,15 +51,6 @@ class MovieDetailsRepository @Inject constructor(private val api: TMDBApi) {
 
     //Movie Recommendations
 
-    fun getTrendingMoviesWeek(): Flow<PagingData<Movie>> {
-        return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 27),
-            pagingSourceFactory = {
-                RecommendationSource(api)
-            }
-        ).flow
-    }
-
     suspend fun getMovieRecommendations(movieId: Int): Resource<MoviesResponse> {
         val response = try {
             api.getMovieRecommendations(movieId)

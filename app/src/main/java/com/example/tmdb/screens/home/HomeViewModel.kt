@@ -8,10 +8,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.example.tmdb.model.*
-import com.example.tmdb.repository.GenresRepository
 import com.example.tmdb.repository.MoviesRepository
 import com.example.tmdb.repository.TvRepository
-import com.example.tmdb.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -22,7 +20,6 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val moviesRepository: MoviesRepository,
-    private val genresRepository: GenresRepository,
     private val tvRepository: TvRepository,
 ) : ViewModel(){
 
@@ -45,9 +42,6 @@ class HomeViewModel @Inject constructor(
     private val _popularMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
     val popularMovies: State<Flow<PagingData<Movie>>> = _popularMovies
 
-    private val _moviesGenres = mutableStateOf<List<Genre>>(emptyList())
-    val moviesGenres: State<List<Genre>> = _moviesGenres
-
     //Tv
     private val _trendingTv = mutableStateOf<Flow<PagingData<Tv>>>(emptyFlow())
     val trendingTv: State<Flow<PagingData<Tv>>> = _trendingTv
@@ -61,24 +55,18 @@ class HomeViewModel @Inject constructor(
     private val _popularTv = mutableStateOf<Flow<PagingData<Tv>>>(emptyFlow())
     val popularTv: State<Flow<PagingData<Tv>>> = _popularTv
 
-    private val _tvGenres = mutableStateOf<List<Genre>>(emptyList())
-    val tvGenres: State<List<Genre>> = _tvGenres
-
     init{
         getTrendingMoviesDay(null)
         getTrendingMoviesWeek(null)
         getNowPayingMovies(null)
         getUpcomingMovies(null)
-        getTopRatedMovies(null)
         getPopularMovies(null)
-        getMoviesGenres()
 
         getAiringTodayTv(null)
         getTrendingTv(null)
         getOnTheAirTv(null)
         getOnTheAirTv(null)
         getPopularTv(null)
-        getTvGenres()
     }
 
     //Movie
@@ -126,19 +114,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getTopRatedMovies(genreId: Int?) {
-        viewModelScope.launch {
-            _topRatedMovies.value = if (genreId != null) {
-                moviesRepository.getTopRatedMovies().map { pagingData ->
-                    pagingData.filter {
-                        it.genreIds.contains(genreId)
-                    }
-                }.cachedIn(viewModelScope)
-            } else {
-                moviesRepository.getTopRatedMovies().cachedIn(viewModelScope)
-            }
-        }
-    }
 
     fun getNowPayingMovies(genreId: Int?) {
         viewModelScope.launch {
@@ -168,22 +143,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getMoviesGenres() {
-        viewModelScope.launch {
-            when (val result = genresRepository.getMoviesGenres()) {
-                is Resource.Success -> {
-                    _moviesGenres.value = result.data?.genres!!
-                }
-                is Resource.Error -> {
-                    //loadingError.value = result.message.toString()
-                }
-                else -> {}
-            }
-        }
-    }
-
     // Tv
-
     fun getTrendingTv(genreId: Int?) {
         viewModelScope.launch {
             _trendingTv.value = if (genreId != null) {
@@ -240,17 +200,4 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getTvGenres() {
-        viewModelScope.launch {
-            when (val result = genresRepository.getSeriesGenres()) {
-                is Resource.Success -> {
-                    _tvGenres.value = result.data?.genres!!
-                }
-                is Resource.Error -> {
-                    //loadingError.value = result.message.toString()
-                }
-                else -> {}
-            }
-        }
-    }
 }

@@ -25,27 +25,7 @@ class DetailsViewModel @Inject constructor(
     private val repository: MovieDetailsRepository
 ) : ViewModel() {
 
-    private var _trendingMoviesDay = mutableStateOf <Flow<PagingData<Movie>>>(emptyFlow())
-    val trendingMoviesDay: State<Flow<PagingData<Movie>>> = _trendingMoviesDay
 
-
-    init{
-        getTrendingMoviesDay(null)
-    }
-    fun getTrendingMoviesDay(genreId: Int?){
-        viewModelScope.launch {
-            _trendingMoviesDay.value = if(genreId != null){
-                repository.getTrendingMoviesWeek().map { pagingData ->
-                    pagingData.filter {
-                        it.genreIds.contains(genreId)
-                    }
-                }.cachedIn(viewModelScope)
-
-            }else{
-                repository.getTrendingMoviesWeek().cachedIn(viewModelScope)
-            }
-        }
-    }
     suspend fun getMovieDetails(movieId: Int?): Resource<MovieDetails> {
         return repository.getMoviesDetails(movieId)
     }

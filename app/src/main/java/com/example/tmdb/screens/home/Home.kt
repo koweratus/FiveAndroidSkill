@@ -73,12 +73,9 @@ fun TabScreen(navController: NavController) {
     val trendingMoviesDay = viewModel.trendingMoviesDay.value.collectAsLazyPagingItems()
     val trendingMoviesWeek = viewModel.trendingMoviesWeek.value.collectAsLazyPagingItems()
     val upcomingMovies = viewModel.upcomingMovies.value.collectAsLazyPagingItems()
-    val topRatedMovies = viewModel.topRatedMovies.value.collectAsLazyPagingItems()
     val nowPlayingMovies = viewModel.nowPlayingMovies.value.collectAsLazyPagingItems()
 
-    val trendingTv = viewModel.trendingTv.value.collectAsLazyPagingItems()
     val onAirTv = viewModel.onAirTv.value.collectAsLazyPagingItems()
-    val airingTodayTv = viewModel.airingTodayTv.value.collectAsLazyPagingItems()
     val popularTv = viewModel.popularTv.value.collectAsLazyPagingItems()
 
     val pagerStateFirstTab = rememberPagerState(initialPage = 0)

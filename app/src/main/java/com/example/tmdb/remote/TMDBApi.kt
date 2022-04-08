@@ -146,15 +146,4 @@ interface TMDBApi {
         @Query("api_key") apiKey: String = API_KEY
     ): MultiSearchResponse
 
-    @GET("genre/movie/list")
-    suspend fun getMovieGenres(
-        @Query("api_key") apiKey: String = API_KEY,
-        @Query("language") language: String = "en"
-    ): GenreResponse
-
-    @GET("genre/tv/list")
-    suspend fun getTvGenres(
-        @Query("api_key") apiKey: String = API_KEY,
-        @Query("language") language: String = "en"
-    ): GenreResponse
 }
