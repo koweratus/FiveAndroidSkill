@@ -14,4 +14,12 @@
     <string name="reviews">Reviews</string>
     <string name="favs">Favourites</string>
     <string name="search">Search</string>
+    <string name="topBilledCast">Top Billed Cast</string>
+    <string name="social">Social</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="writtenBy">Written by %1$s on %2$s</string>
+    <string name="reviewBy">A review by %1$s</string>
+    <string name="user_score">User Score</string>
+    <string name="runtime"><b> %1$s min</b></string>
+
 </resources>

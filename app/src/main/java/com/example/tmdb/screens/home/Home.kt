@@ -39,13 +39,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.example.tmdb.BottomBarScreen
 import com.example.tmdb.R
 import com.example.tmdb.screens.home.HomeViewModel
+import com.example.tmdb.screens.widgets.FavoriteButton
+import com.example.tmdb.screens.widgets.SearchAppBar
+import com.example.tmdb.screens.widgets.SectionText
+import com.example.tmdb.screens.widgets.Tabs
 import com.example.tmdb.utils.Constants.IMAGE_BASE_UR
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
@@ -53,9 +59,9 @@ import kotlinx.coroutines.launch
 @ExperimentalPagerApi
 @Composable
 fun HomeScreen(
+    navController: NavController
 ) {
-
-    TabScreen(navController = rememberNavController())
+    TabScreen(navController)
 }
 
 @ExperimentalPagerApi
@@ -107,19 +113,19 @@ fun TabScreen(navController: NavController) {
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     popularMovies,
-                    navController
+                    navController, "movie_details_screen"
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     popularTv,
-                    navController
+                    navController, "tv_details_screen"
                 )
                 2 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     upcomingMovies,
-                    navController
+                    navController, "movie_details_screen"
                 )
             }
             Spacer(modifier = Modifier.padding(20.dp))
@@ -131,32 +137,34 @@ fun TabScreen(navController: NavController) {
                 0 -> TabsContent(
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
-                    nowPlayingMovies, navController
+                    nowPlayingMovies, navController, "movie_details_screen"
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
-                    onAirTv, navController
+                    onAirTv, navController, "tv_details_screen"
                 )
             }
 
             Spacer(modifier = Modifier.padding(20.dp))
         }
         item {
-            stringResource(R.string.trending)
+            SectionText(text = stringResource(R.string.trending))
             Tabs(pagerState = pagerStateThirdTab, listThirdTab)
-            when(pagerStateThirdTab.targetPage){
-                0->  TabsContent(
+            when (pagerStateThirdTab.targetPage) {
+                0 -> TabsContent(
                     pagerState = pagerStateThirdTab,
                     listThirdTab.size,
                     trendingMoviesDay,
-                    navController
+                    navController,
+                    "movie_details_screen"
                 )
-                1->  TabsContent(
+                1 -> TabsContent(
                     pagerState = pagerStateThirdTab,
                     listThirdTab.size,
                     trendingMoviesWeek,
-                    navController
+                    navController,
+                    "movie_details_screen"
                 )
             }
             Spacer(modifier = Modifier.padding(40.dp))
@@ -167,63 +175,12 @@ fun TabScreen(navController: NavController) {
 
 @ExperimentalPagerApi
 @Composable
-fun Tabs(pagerState: PagerState, list: List<String>) {
-
-    val scope = rememberCoroutineScope()
-    ScrollableTabRow(
-        selectedTabIndex = pagerState.currentPage,
-        backgroundColor = Color.Transparent,
-        contentColor = Color.White,
-        divider = {
-            TabRowDefaults.Divider(
-                thickness = 3.dp,
-                color = Color.White
-            )
-        },
-        indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                Modifier
-                    .pagerTabIndicatorOffset(pagerState, tabPositions)
-                    .wrapContentWidth(),
-                height = 3.dp,
-                color = colorResource(R.color.purple_700)
-            )
-        },
-        edgePadding = 0.dp,
-        modifier = Modifier.padding(start = 10.dp)
-    ) {
-        list.forEachIndexed { index, _ ->
-            Tab(
-                text = {
-                    Text(
-                        text = list[index],
-                        textAlign = TextAlign.Start,
-                        color = if (pagerState.currentPage == index) Color.Black else Color.LightGray,
-                        fontFamily = FontFamily(Font(R.font.proximanova_bold)),
-                        fontSize = 16.sp,
-                    )
-
-                },
-                modifier = Modifier
-                    .wrapContentWidth(),
-                selected = pagerState.currentPage == index,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                }
-            )
-        }
-    }
-}
-
-@ExperimentalPagerApi
-@Composable
 fun <T : Any> TabsContent(
     pagerState: PagerState,
     count: Int,
     list: LazyPagingItems<T>,
-    navController: NavController
+    navController: NavController,
+    route: String
 ) {
     HorizontalPager(
         count,
@@ -231,19 +188,19 @@ fun <T : Any> TabsContent(
         verticalAlignment = Alignment.Top
     ) { page ->
         when (page) {
-            0 -> RowSectionItem(list, navController)
-            1 -> RowSectionItem(list, navController)
-            2 -> RowSectionItem(list, navController)
+            0 -> RowSectionItem(list, navController, route)
+            1 -> RowSectionItem(list, navController, route)
+            2 -> RowSectionItem(list, navController, route)
         }
     }
 }
-
 
 @ExperimentalPagerApi
 @Composable
 fun <T : Any> RowSectionItem(
     list: LazyPagingItems<T>,
-    navController: NavController?
+    navController: NavController?,
+    route: String
 ) {
     Column(
         modifier = Modifier
@@ -262,7 +219,7 @@ fun <T : Any> RowSectionItem(
             items(
                 items = list
             ) { item ->
-                navController?.let { RowItem(posterUrl = item, it) }
+                navController?.let { RowItem(posterUrl = item, it, route) }
             }
         }
     }
@@ -271,12 +228,16 @@ fun <T : Any> RowSectionItem(
 @Composable
 fun RowItem(
     posterUrl: Any?,
-    navController: NavController
+    navController: NavController,
+    route: String
 ) {
 
     //get poster whether its movie or tv media
     val getMediaPosterUrl = posterUrl?.javaClass?.getDeclaredField("posterPath")
     getMediaPosterUrl?.isAccessible = true
+
+    val getId = posterUrl?.javaClass?.getDeclaredField("id")
+    getId?.isAccessible = true
     Card(
         modifier = Modifier
             .size(width = 140.dp, height = 220.dp)
@@ -284,7 +245,8 @@ fun RowItem(
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = rememberRipple(bounded = true, color = Color.Black),
-                onClick = { //navController.navigate(BottomBarScreen.Details.route)
+                onClick = {
+                    navController.navigate(route + "/${getId?.get(posterUrl)}")
                 }
             ),
         shape = RoundedCornerShape(15.dp),
@@ -324,107 +286,6 @@ fun RowItem(
     }
 }
 
-@Composable
-fun FavoriteButton(
-    modifier: Modifier = Modifier,
-    color: Color = Color.White
-) {
-    var isFavorite by remember { mutableStateOf(false) }
 
-    IconToggleButton(
-        checked = isFavorite,
-        onCheckedChange = {
-            isFavorite = !isFavorite
-        }
-    ) {
-        Icon(
-            tint = color,
-            imageVector = if (isFavorite) {
-                Icons.Filled.Favorite
 
-            } else {
-                Icons.Default.FavoriteBorder
-            },
-            contentDescription = null
-        )
-    }
-}
 
-@Composable
-private fun SectionText(text: String) {
-    Text(
-        text = text,
-        color = colorResource(R.color.purple_700),
-        textAlign = TextAlign.Start,
-        fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
-        fontSize = 24.sp,
-        modifier = Modifier
-            .padding(start = 16.dp)
-    )
-}
-
-@Composable
-fun SearchAppBar(
-    text: String,
-    onTextChange: (String) -> Unit,
-    onCloseClicked: () -> Unit,
-    onSearchClicked: (String) -> Unit,
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .padding(start = 16.dp, end = 16.dp)
-            .clip(shape = RoundedCornerShape(6.dp)),
-
-        elevation = AppBarDefaults.TopAppBarElevation,
-        color = Color.LightGray
-    ) {
-        TextField(
-            value = text,
-            onValueChange = { onTextChange(it) },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = {
-                Text(
-                    modifier = Modifier.alpha(ContentAlpha.medium),
-                    text = stringResource(R.string.search),
-                    color = Color.White
-                )
-            },
-            textStyle = TextStyle(
-                fontSize = MaterialTheme.typography.subtitle1.fontSize,
-
-                ),
-            singleLine = true,
-            leadingIcon = {
-                IconButton(
-                    onClick = {
-                        if (text.isNotEmpty()) {
-                            onTextChange("")
-                        } else {
-                            onCloseClicked()
-                        }
-                    },
-                    modifier = Modifier.alpha(ContentAlpha.medium)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search Icon",
-                        tint = Color.White
-                    )
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    onSearchClicked(text)
-                }
-            ),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color(R.color.purple_700)
-            )
-        )
-    }
-}

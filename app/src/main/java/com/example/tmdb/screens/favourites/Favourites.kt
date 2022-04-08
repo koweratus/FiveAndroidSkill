@@ -25,6 +25,8 @@ import coil.request.ImageRequest
 import com.example.tmdb.BottomBarScreen
 import com.example.tmdb.R
 import com.example.tmdb.model.Movie
+import com.example.tmdb.screens.widgets.FavoriteButton
+import com.example.tmdb.screens.widgets.SectionText
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 @ExperimentalPagerApi
@@ -35,7 +37,7 @@ fun FavouritesScreen(navController: NavController) {
     //
 
     Column(Modifier.padding(top = 50.dp, bottom = 40.dp)) {
-        SectionTitle(title = stringResource(R.string.favs))
+        SectionText(stringResource(R.string.favs))
         LazyVerticalGrid(
             cells = GridCells.Adaptive(105.dp),
             // content padding
