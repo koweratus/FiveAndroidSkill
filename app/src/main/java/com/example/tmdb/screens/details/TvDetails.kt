@@ -13,7 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -33,7 +34,10 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
-import com.example.tmdb.remote.responses.*
+import com.example.tmdb.remote.responses.CreditsResponse
+import com.example.tmdb.remote.responses.ReviewResponse
+import com.example.tmdb.remote.responses.TvDetails
+import com.example.tmdb.remote.responses.TvResponse
 import com.example.tmdb.screens.details.DetailsViewModel
 import com.example.tmdb.screens.details.common.ImageItem
 import com.example.tmdb.screens.details.common.Overview
@@ -51,7 +55,8 @@ import com.google.accompanist.pager.rememberPagerState
 fun TvDetailsScreen(navController: NavController, mediaId: Int?) {
     val viewModel: DetailsViewModel = hiltViewModel()
     val details = produceState<Resource<TvDetails>>(initialValue = Resource.Loading()) {
-        value = viewModel.getTvDetails(mediaId)}.value
+        value = viewModel.getTvDetails(mediaId)
+    }.value
     val casts = produceState<Resource<CreditsResponse>>(initialValue = Resource.Loading()) {
         value = viewModel.getTvCasts(mediaId!!)
     }.value
@@ -64,7 +69,8 @@ fun TvDetailsScreen(navController: NavController, mediaId: Int?) {
     }.value
     val pagerState = rememberPagerState(initialPage = 0)
     val listFirstTab = listOf(
-        stringResource(R.string.reviews), stringResource(R.string.discussions))
+        stringResource(R.string.reviews), stringResource(R.string.discussions)
+    )
 
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly
@@ -75,13 +81,13 @@ fun TvDetailsScreen(navController: NavController, mediaId: Int?) {
                 mediaName = details.data?.name.toString(),
                 mediaReleaseDate = details.data?.firstAirDate.toString(),
                 rating = details.data?.voteAverage?.toFloat(),
-                genres = details.data?.genres?.joinToString{
+                genres = details.data?.genres?.joinToString {
                     it.name
                 }.toString(),
                 runTime = details.data?.episodeRunTime.toString()
 
             )
-            Overview(navController,casts = casts, overview = details.data?.overview.toString())
+            Overview(navController, casts = casts, overview = details.data?.overview.toString())
             SectionText("Top Billed Cast")
             if (casts is Resource.Success) {
                 TopBilledCastSectionItem(list = casts.data!!)
@@ -89,8 +95,8 @@ fun TvDetailsScreen(navController: NavController, mediaId: Int?) {
             Spacer(Modifier.padding(35.dp))
             SectionText(stringResource(R.string.social))
             Tabs(pagerState = pagerState, listFirstTab)
-            if (review is Resource.Success){
-                TabsContentForSocial(pagerState = pagerState, listFirstTab.size,review.data!!)
+            if (review is Resource.Success) {
+                TabsContentForSocial(pagerState = pagerState, listFirstTab.size, review.data!!)
             }
             SectionText(stringResource(R.string.recommendations))
             if (recommendation is Resource.Success) {
@@ -100,6 +106,7 @@ fun TvDetailsScreen(navController: NavController, mediaId: Int?) {
         }
     }
 }
+
 @Composable
 private fun RowRecommendationsItem(
     list: TvResponse,
@@ -150,7 +157,8 @@ private fun RowItemRecommendations(
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(bounded = true, color = Color.Black),
-                    onClick = { navController.navigate("tv_details_screen/${id}")
+                    onClick = {
+                        navController.navigate("tv_details_screen/${id}")
                     }
                 ),
             shape = RoundedCornerShape(15.dp),

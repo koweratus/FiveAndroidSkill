@@ -29,7 +29,14 @@ import coil.request.ImageRequest
 import com.example.tmdb.R
 
 @Composable
-fun ImageItem(mediaPosterUrl: String, mediaName: String, rating: Float?, mediaReleaseDate: String, genres: String,runTime: String) {
+fun ImageItem(
+    mediaPosterUrl: String,
+    mediaName: String,
+    rating: Float?,
+    mediaReleaseDate: String,
+    genres: String,
+    runTime: String
+) {
 
     Card(
         modifier = Modifier
@@ -73,7 +80,7 @@ fun ImageItem(mediaPosterUrl: String, mediaName: String, rating: Float?, mediaRe
                         )
                     )
             )
-            Row(modifier = Modifier.padding(start = 16.dp, top = 105.dp)){
+            Row(modifier = Modifier.padding(start = 16.dp, top = 105.dp)) {
                 rating?.let { CircularProgressionBar(percentage = it) }
                 Text(
                     text = stringResource(R.string.user_score),
@@ -110,7 +117,7 @@ fun ImageItem(mediaPosterUrl: String, mediaName: String, rating: Float?, mediaRe
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(top = 208.dp, start = 10.dp),
-                text = genres + stringResource(R.string.runtime,runTime)
+                text = genres + stringResource(R.string.runtime, runTime)
             )
             Icon(
                 imageVector =

@@ -1,14 +1,8 @@
 package com.example.tmdb.repository
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import com.example.tmdb.model.Movie
-import com.example.tmdb.paging.RecommendationSource
 import com.example.tmdb.remote.TMDBApi
 import com.example.tmdb.remote.responses.*
 import com.example.tmdb.utils.Resource
-import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -61,6 +55,7 @@ class MovieDetailsRepository @Inject constructor(private val api: TMDBApi) {
         Timber.d("Movie Casts $response")
         return Resource.Success(response)
     }
+
     // Tv Details
     suspend fun getTvDetails(tvId: Int?): Resource<TvDetails> {
         val response = try {

@@ -12,5 +12,4 @@ data class TvResponse(
     val total_pages: Int,
     @SerializedName("total_results")
     val total_results: Int
-
 )

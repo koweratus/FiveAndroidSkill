@@ -1,6 +1,5 @@
 package com.example.tmdb.remote
 
-import com.example.tmdb.BuildConfig
 import com.example.tmdb.BuildConfig.API_KEY
 import com.example.tmdb.remote.responses.*
 import com.example.tmdb.utils.Constants.STARTING_PAGE_INDEX

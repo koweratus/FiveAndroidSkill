@@ -9,52 +9,38 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.Card
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.tmdb.BottomBarScreen
 import com.example.tmdb.R
+import com.example.tmdb.navigation.RootScreen
 import com.example.tmdb.screens.home.HomeViewModel
 import com.example.tmdb.screens.widgets.FavoriteButton
 import com.example.tmdb.screens.widgets.SearchAppBar
 import com.example.tmdb.screens.widgets.SectionText
 import com.example.tmdb.screens.widgets.Tabs
 import com.example.tmdb.utils.Constants.IMAGE_BASE_UR
-import com.google.accompanist.pager.*
-import kotlinx.coroutines.launch
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
 
 @ExperimentalPagerApi
 @Composable
@@ -69,14 +55,14 @@ fun HomeScreen(
 fun TabScreen(navController: NavController) {
 
     val viewModel: HomeViewModel = hiltViewModel()
-    val popularMovies = viewModel.popularMovies.value.collectAsLazyPagingItems()
-    val trendingMoviesDay = viewModel.trendingMoviesDay.value.collectAsLazyPagingItems()
-    val trendingMoviesWeek = viewModel.trendingMoviesWeek.value.collectAsLazyPagingItems()
-    val upcomingMovies = viewModel.upcomingMovies.value.collectAsLazyPagingItems()
-    val nowPlayingMovies = viewModel.nowPlayingMovies.value.collectAsLazyPagingItems()
+    val popularMovies = viewModel.popularMovies.collectAsLazyPagingItems()
+    val trendingMoviesDay = viewModel.trendingMoviesDay.collectAsLazyPagingItems()
+    val trendingMoviesWeek = viewModel.trendingMoviesWeek.collectAsLazyPagingItems()
+    val upcomingMovies = viewModel.upcomingMovies.collectAsLazyPagingItems()
+    val nowPlayingMovies = viewModel.nowPlayingMovies.collectAsLazyPagingItems()
 
-    val onAirTv = viewModel.onAirTv.value.collectAsLazyPagingItems()
-    val popularTv = viewModel.popularTv.value.collectAsLazyPagingItems()
+    val onAirTv = viewModel.onAirTv.collectAsLazyPagingItems()
+    val popularTv = viewModel.popularTv.collectAsLazyPagingItems()
 
     val pagerStateFirstTab = rememberPagerState(initialPage = 0)
     val pagerStateSecondTab = rememberPagerState(initialPage = 0)
@@ -88,10 +74,10 @@ fun TabScreen(navController: NavController) {
     )
     val listSecondTab = listOf(stringResource(R.string.movies), stringResource(R.string.tv))
     val listThirdTab = listOf(stringResource(R.string.today), stringResource(R.string.thisWeek))
+
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
-
-        )
+    )
     {
         item {
             Spacer(modifier = Modifier.padding(40.dp))
@@ -110,19 +96,19 @@ fun TabScreen(navController: NavController) {
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     popularMovies,
-                    navController, "movie_details_screen"
+                    navController, RootScreen.MovieDetails.route
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     popularTv,
-                    navController, "tv_details_screen"
+                    navController, RootScreen.TvDetails.route
                 )
                 2 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     upcomingMovies,
-                    navController, "movie_details_screen"
+                    navController, RootScreen.MovieDetails.route
                 )
             }
             Spacer(modifier = Modifier.padding(20.dp))
@@ -134,12 +120,12 @@ fun TabScreen(navController: NavController) {
                 0 -> TabsContent(
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
-                    nowPlayingMovies, navController, "movie_details_screen"
+                    nowPlayingMovies, navController, RootScreen.MovieDetails.route
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
-                    onAirTv, navController, "tv_details_screen"
+                    onAirTv, navController, RootScreen.TvDetails.route
                 )
             }
 
@@ -154,14 +140,14 @@ fun TabScreen(navController: NavController) {
                     listThirdTab.size,
                     trendingMoviesDay,
                     navController,
-                    "movie_details_screen"
+                    RootScreen.MovieDetails.route
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateThirdTab,
                     listThirdTab.size,
                     trendingMoviesWeek,
                     navController,
-                    "movie_details_screen"
+                    RootScreen.MovieDetails.route
                 )
             }
             Spacer(modifier = Modifier.padding(40.dp))

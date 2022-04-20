@@ -28,7 +28,7 @@ import com.google.accompanist.pager.PagerState
 
 @ExperimentalPagerApi
 @Composable
-fun TabsContentForSocial(pagerState: PagerState, count: Int,review: ReviewResponse?) {
+fun TabsContentForSocial(pagerState: PagerState, count: Int, review: ReviewResponse?) {
 
     HorizontalPager(count, state = pagerState, verticalAlignment = Alignment.Top) { page ->
         when (page) {
@@ -41,13 +41,15 @@ fun TabsContentForSocial(pagerState: PagerState, count: Int,review: ReviewRespon
 
 @Composable
 private fun ReviewSection(
-    review: ReviewResponse?, ) {
+    review: ReviewResponse?,
+) {
 
     LazyColumn(modifier = Modifier.height(400.dp))
-    { review?.review?.forEach {
-        item {
-            val date= getAbbreviatedFromDateTime(it.createdAt,"yyyy-MM-dd","MMM d, YYYY")
-            val avatar = it.authorDetails.avatarPath
+    {
+        review?.review?.forEach {
+            item {
+                val date = getAbbreviatedFromDateTime(it.createdAt, "yyyy-MM-dd", "MMM d, YYYY")
+                val avatar = it.authorDetails.avatarPath
                 Row(
                     modifier = Modifier
                         .fillMaxHeight(0.3f)
@@ -75,7 +77,7 @@ private fun ReviewSection(
                             .fillMaxWidth(1f)
                     ) {
                         Text(
-                            text =  stringResource(R.string.reviewBy, it.author),
+                            text = stringResource(R.string.reviewBy, it.author),
                             color = Color.Black,
                             textAlign = TextAlign.Start,
                             fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
@@ -110,7 +112,7 @@ private fun ReviewSection(
                             .fillMaxWidth(.8f),
                         softWrap = true,
                     )
-                    Spacer(modifier = Modifier.padding(top=25.dp))
+                    Spacer(modifier = Modifier.padding(top = 25.dp))
                 }
             }
         }

@@ -1,24 +1,24 @@
 package com.example.tmdb.repository
 
-import androidx.lifecycle.LiveData
 import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.data.local.TmdbDatabase
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class FavouritesRepository@Inject constructor(private val database: TmdbDatabase) {
+class FavouritesRepository @Inject constructor(private val database: TmdbDatabase) {
     suspend fun insertFavorite(favorite: Favourite) {
         database.dao.insertFavourite(favorite)
     }
 
-    fun getFavorites(): LiveData<List<Favourite>> {
+    fun getFavorites(): Flow<List<Favourite>> {
         return database.dao.getAllFavourites()
     }
 
-    fun isFavorite(mediaId: Int): LiveData<Boolean> {
+    fun isFavorite(mediaId: Int): Flow<Boolean> {
         return database.dao.isFavourite(mediaId)
     }
 
-    fun getAFavorites(mediaId: Int): LiveData<Favourite?> {
+    fun getAFavorites(mediaId: Int): Flow<Favourite?> {
         return database.dao.getFavourite(mediaId)
     }
 

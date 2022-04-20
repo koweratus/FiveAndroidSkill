@@ -138,7 +138,7 @@ fun RowRecommendationsItem(
                     id = item.id,
                     navController = navController
                 )
-                println("Rec "+list.searches)
+                println("Rec " + list.searches)
             }
         }
     }
@@ -160,7 +160,8 @@ private fun RowItemRecommendations(
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(bounded = true, color = Color.Black),
-                    onClick = { navController.navigate("movie_details_screen/${id}")
+                    onClick = {
+                        navController.navigate("movie_details_screen/${id}")
                     }
                 ),
             shape = RoundedCornerShape(15.dp),

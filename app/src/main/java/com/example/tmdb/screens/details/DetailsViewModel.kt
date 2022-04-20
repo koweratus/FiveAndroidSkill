@@ -1,22 +1,10 @@
 package com.example.tmdb.screens.details
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.filter
-import com.example.tmdb.model.Movie
 import com.example.tmdb.remote.responses.*
 import com.example.tmdb.repository.MovieDetailsRepository
 import com.example.tmdb.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -63,6 +51,7 @@ class DetailsViewModel @Inject constructor(
         Timber.d(recommendations.data.toString())
         return recommendations
     }
+
     suspend fun getTvCasts(tvId: Int): Resource<CreditsResponse> {
         return repository.getTvCasts(tvId)
     }

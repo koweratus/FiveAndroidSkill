@@ -32,21 +32,22 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(htttpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient{
+    fun provideOkHttpClient(htttpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(htttpLoggingInterceptor)
-            .callTimeout(15,TimeUnit.SECONDS
+            .callTimeout(
+                15, TimeUnit.SECONDS
             )
-            .connectTimeout(15,TimeUnit.SECONDS)
-            .writeTimeout(15,TimeUnit.SECONDS)
-            .readTimeout(15,TimeUnit.SECONDS)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
 
         return okHttpClient.build()
     }
 
     @Provides
     @Singleton
-    fun providesTmdbApi(okHttpClient: OkHttpClient): TMDBApi{
+    fun providesTmdbApi(okHttpClient: OkHttpClient): TMDBApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -67,7 +68,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMovieDetailsRepository(api:TMDBApi) = MoviesRepository(api)
+    fun provideMovieDetailsRepository(api: TMDBApi) = MoviesRepository(api)
 
     @Provides
     @Singleton

@@ -3,7 +3,7 @@ package com.example.tmdb.remote.responses
 import com.example.tmdb.model.Search
 import com.google.gson.annotations.SerializedName
 
-data class MultiSearchResponse (
+data class MultiSearchResponse(
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")

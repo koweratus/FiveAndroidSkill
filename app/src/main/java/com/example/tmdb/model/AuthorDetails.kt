@@ -7,11 +7,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class AuthorDetails(
     @SerializedName("name")
-    val name:String,
+    val name: String,
     @SerializedName("username")
-    val username:String,
+    val username: String,
     @SerializedName("avatar_path")
     val avatarPath: String,
     @SerializedName("rating")
     val rating: Int
-):Parcelable
+) : Parcelable

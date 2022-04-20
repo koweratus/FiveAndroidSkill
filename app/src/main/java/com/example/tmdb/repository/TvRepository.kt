@@ -12,7 +12,7 @@ import com.example.tmdb.remote.TMDBApi
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class TvRepository@Inject constructor(private val api: TMDBApi) {
+class TvRepository @Inject constructor(private val api: TMDBApi) {
     fun getTrendingThisWeekTvSeries(): Flow<PagingData<Tv>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 27),
@@ -30,7 +30,6 @@ class TvRepository@Inject constructor(private val api: TMDBApi) {
             }
         ).flow
     }
-
 
 
     fun getAiringTodayTvSeries(): Flow<PagingData<Tv>> {

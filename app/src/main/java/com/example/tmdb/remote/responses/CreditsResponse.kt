@@ -11,4 +11,4 @@ data class CreditsResponse(
     val cast: List<Cast>,
     @SerializedName("id")
     val id: Int
-):Parcelable
+) : Parcelable

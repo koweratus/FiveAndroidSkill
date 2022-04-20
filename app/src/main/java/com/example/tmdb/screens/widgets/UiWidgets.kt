@@ -139,6 +139,7 @@ fun SearchAppBar(
         )
     }
 }
+
 @ExperimentalPagerApi
 @Composable
 fun Tabs(pagerState: PagerState, list: List<String>) {
@@ -190,6 +191,7 @@ fun Tabs(pagerState: PagerState, list: List<String>) {
         }
     }
 }
+
 fun getAbbreviatedFromDateTime(dateTime: String, dateFormat: String, field: String): String? {
     val input = SimpleDateFormat(dateFormat)
     val output = SimpleDateFormat(field)

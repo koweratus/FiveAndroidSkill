@@ -8,7 +8,7 @@ import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
 
-class TrendingMoviesDaySource (private val api: TMDBApi) :
+class TrendingMoviesDaySource(private val api: TMDBApi) :
     PagingSource<Int, Movie>() {
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
         return state.anchorPosition

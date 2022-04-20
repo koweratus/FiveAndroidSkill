@@ -20,4 +20,4 @@ data class Review(
     val updatedAt: String,
     @SerializedName("author_details")
     val authorDetails: AuthorDetails
-): Parcelable
+) : Parcelable

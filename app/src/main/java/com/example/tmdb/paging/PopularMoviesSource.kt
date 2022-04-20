@@ -7,7 +7,7 @@ import com.example.tmdb.remote.TMDBApi
 import retrofit2.HttpException
 import java.io.IOException
 
-class PopularMoviesSource (private val api: TMDBApi) :
+class PopularMoviesSource(private val api: TMDBApi) :
     PagingSource<Int, Movie>() {
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
         return state.anchorPosition
