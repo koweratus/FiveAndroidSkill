@@ -50,19 +50,17 @@ fun SectionText(text: String) {
 @Composable
 fun FavoriteButton(
     modifier: Modifier = Modifier,
-    color: Color = Color.White
+    isLiked: Boolean,
+    onClick: (isFav: Boolean) -> Unit = {}
 ) {
-    var isFavorite by remember { mutableStateOf(false) }
 
-    IconToggleButton(
-        checked = isFavorite,
-        onCheckedChange = {
-            isFavorite = !isFavorite
-        }
-    ) {
+    IconButton(
+        onClick = {
+            onClick(isLiked)
+        }) {
         Icon(
-            tint = color,
-            imageVector = if (isFavorite) {
+            tint =  Color.White,
+            imageVector = if (isLiked) {
                 Icons.Filled.Favorite
 
             } else {

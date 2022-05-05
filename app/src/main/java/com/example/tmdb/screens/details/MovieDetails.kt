@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
+import com.example.tmdb.navigation.RootScreen
 import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.remote.responses.MovieDetails
 import com.example.tmdb.remote.responses.MoviesResponse
@@ -43,6 +44,7 @@ import com.example.tmdb.screens.details.common.ImageItem
 import com.example.tmdb.screens.details.common.Overview
 import com.example.tmdb.screens.details.common.TabsContentForSocial
 import com.example.tmdb.screens.details.common.TopBilledCastSectionItem
+import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.widgets.SectionText
 import com.example.tmdb.screens.widgets.Tabs
 import com.example.tmdb.utils.Constants
@@ -52,7 +54,8 @@ import com.google.accompanist.pager.rememberPagerState
 
 @ExperimentalPagerApi
 @Composable
-fun MovieDetailsScreen(navController: NavController, mediaId: Int?) {
+fun MovieDetailsScreen(navController: NavController, mediaId: Int?,favouritesViewModel: FavouritesViewModel = hiltViewModel()
+) {
     val viewModel: DetailsViewModel = hiltViewModel()
     val details = produceState<Resource<MovieDetails>>(initialValue = Resource.Loading()) {
         value = viewModel.getMovieDetails(mediaId)
@@ -78,16 +81,21 @@ fun MovieDetailsScreen(navController: NavController, mediaId: Int?) {
     ) {
         item {
             details.data?.genres?.let { it ->
-                ImageItem(
-                    mediaPosterUrl = "${Constants.IMAGE_BASE_UR}/${details.data.posterPath}",
-                    mediaName = details.data.title.toString(),
-                    mediaReleaseDate = details.data.releaseDate.toString(),
-                    rating = details.data.voteAverage?.toFloat(),
-                    genres = details.data.genres.joinToString {
-                        it.name
-                    },
-                    runTime = details.data.runtime.toString()
-                )
+                details.data.id?.let { it1 ->
+                    ImageItem(
+                        mediaPosterUrl = "${Constants.IMAGE_BASE_UR}/${details.data.posterPath}",
+                        mediaName = details.data.title.toString(),
+                        mediaReleaseDate = details.data.releaseDate.toString(),
+                        rating = details.data.voteAverage?.toFloat(),
+                        genres = details.data.genres.joinToString {
+                            it.name
+                        },
+                        runTime = details.data.runtime.toString(),
+                        viewModel = favouritesViewModel,
+                        mediaId = it1,
+                        mediaType = "movie"
+                    )
+                }
             }
             Overview(navController, casts = casts, overview = details.data?.overview.toString())
             SectionText(stringResource(R.string.topBilledCast))
@@ -161,7 +169,7 @@ private fun RowItemRecommendations(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(bounded = true, color = Color.Black),
                     onClick = {
-                        navController.navigate("movie_details_screen/${id}")
+                        navController.navigate(RootScreen.MovieDetails.route +"/${id}")
                     }
                 ),
             shape = RoundedCornerShape(15.dp),

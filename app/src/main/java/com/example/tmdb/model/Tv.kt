@@ -6,13 +6,13 @@ data class Tv(
     @SerializedName("backdrop_path")
     val backdropPath: String,
     @SerializedName("first_air_date")
-    val firstAirDate: String,
+    val releaseDate: String,
     @SerializedName("genre_ids")
     val genreIds: List<Int>,
     @SerializedName("id")
     val id: Int,
     @SerializedName("name")
-    val name: String,
+    val title: String,
     @SerializedName("origin_country")
     val originCountry: List<String>,
     @SerializedName("original_language")
@@ -26,7 +26,7 @@ data class Tv(
     @SerializedName("poster_path")
     val posterPath: String,
     @SerializedName("vote_average")
-    val voteAverage: Double,
+    val voteAverage: Float,
     @SerializedName("vote_count")
     val voteCount: Int
 )

@@ -13,4 +13,4 @@ data class Favourite(
     val title: String,
     val releaseDate: String,
     val rating: Float
-)
+    )

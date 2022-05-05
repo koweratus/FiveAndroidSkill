@@ -21,8 +21,8 @@ interface TmdbDao {
     @Query("SELECT favourite FROM tmdb_table WHERE mediaId = :mediaId")
     fun isFavourite(mediaId: Int): Flow<Boolean>
 
-    @Delete
-    suspend fun deleteFavourite(favourite: Favourite)
+    @Query("DELETE FROM tmdb_table WHERE mediaId = :mediaId")
+    suspend fun deleteFavourite(mediaId: Int)
 
     @Query("DELETE FROM tmdb_table")
     suspend fun deleteAllFavourites()

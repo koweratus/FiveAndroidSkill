@@ -1,5 +1,6 @@
 package com.example.tmdb.screens.details.common
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,10 +13,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -27,6 +30,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
+import com.example.tmdb.data.local.Favourite
+import com.example.tmdb.screens.favourites.FavouritesViewModel
+import com.example.tmdb.screens.widgets.FavoriteButton
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.observeOn
 
 @Composable
 fun ImageItem(
@@ -35,8 +43,12 @@ fun ImageItem(
     rating: Float?,
     mediaReleaseDate: String,
     genres: String,
-    runTime: String
+    runTime: String,
+    viewModel: FavouritesViewModel,
+    mediaType: String,
+    mediaId: Int
 ) {
+    val context = LocalContext.current
 
     Card(
         modifier = Modifier
@@ -119,12 +131,34 @@ fun ImageItem(
                     .padding(top = 208.dp, start = 10.dp),
                 text = genres + stringResource(R.string.runtime, runTime)
             )
-            Icon(
+            /*Icon(
                 imageVector =
                 Icons.Default.FavoriteBorder,
                 contentDescription = null,
                 modifier = Modifier.padding(top = 250.dp, start = 10.dp),
                 tint = Color.White
+            )*/
+            FavoriteButton(
+                isLiked = viewModel.isAFavorite(mediaId).collectAsState(false).value != null,
+                onClick = { isFav ->
+                    if (isFav) {
+                        viewModel.deleteOneFavorite(mediaId)
+                        Toast.makeText(context, "Successfully deleted a favourite.", Toast.LENGTH_SHORT).show()
+                        return@FavoriteButton
+                    } else {
+                        viewModel.insertFavorite(
+                            Favourite(
+                                favourite = true,
+                                mediaId = mediaId,
+                                mediaType = mediaType,
+                                image = mediaPosterUrl,
+                                title = mediaName,
+                                releaseDate = mediaReleaseDate,
+                                rating = rating!!
+                            )
+                        )
+                    }
+                }
             )
         }
 

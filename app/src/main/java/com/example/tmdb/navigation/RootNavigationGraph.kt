@@ -2,6 +2,7 @@ package com.example.tmdb
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,6 +11,8 @@ import androidx.navigation.navArgument
 import com.example.tmdb.navigation.RootScreen
 import com.example.tmdb.screens.MovieDetailsScreen
 import com.example.tmdb.screens.TvDetailsScreen
+import com.example.tmdb.screens.details.DetailsViewModel
+import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 
@@ -18,6 +21,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 fun RootNavigationGraph(
     rootNavHostController: NavHostController
 ) {
+
     NavHost(rootNavHostController, startDestination = RootScreen.Main.route) {
         composable(RootScreen.Main.route) {
             MainScren(rootNavHostController)

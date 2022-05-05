@@ -1,5 +1,6 @@
 package com.example.tmdb.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,7 +32,9 @@ import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
+import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.navigation.RootScreen
+import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.home.HomeViewModel
 import com.example.tmdb.screens.widgets.FavoriteButton
 import com.example.tmdb.screens.widgets.SearchAppBar
@@ -41,6 +45,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.flow.collectIndexed
 
 @ExperimentalPagerApi
 @Composable
@@ -96,19 +101,19 @@ fun TabScreen(navController: NavController) {
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     popularMovies,
-                    navController, RootScreen.MovieDetails.route
+                    navController, RootScreen.MovieDetails.route,"movie"
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     popularTv,
-                    navController, RootScreen.TvDetails.route
+                    navController, RootScreen.TvDetails.route,"tv"
                 )
                 2 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     upcomingMovies,
-                    navController, RootScreen.MovieDetails.route
+                    navController, RootScreen.MovieDetails.route,"movie"
                 )
             }
             Spacer(modifier = Modifier.padding(20.dp))
@@ -120,12 +125,12 @@ fun TabScreen(navController: NavController) {
                 0 -> TabsContent(
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
-                    nowPlayingMovies, navController, RootScreen.MovieDetails.route
+                    nowPlayingMovies, navController, RootScreen.MovieDetails.route,"movie"
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
-                    onAirTv, navController, RootScreen.TvDetails.route
+                    onAirTv, navController, RootScreen.TvDetails.route,"tv"
                 )
             }
 
@@ -140,14 +145,14 @@ fun TabScreen(navController: NavController) {
                     listThirdTab.size,
                     trendingMoviesDay,
                     navController,
-                    RootScreen.MovieDetails.route
+                    RootScreen.MovieDetails.route,"movie"
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateThirdTab,
                     listThirdTab.size,
                     trendingMoviesWeek,
                     navController,
-                    RootScreen.MovieDetails.route
+                    RootScreen.MovieDetails.route,"movie"
                 )
             }
             Spacer(modifier = Modifier.padding(40.dp))
@@ -163,7 +168,8 @@ fun <T : Any> TabsContent(
     count: Int,
     list: LazyPagingItems<T>,
     navController: NavController,
-    route: String
+    route: String,
+    type: String
 ) {
     HorizontalPager(
         count,
@@ -171,9 +177,9 @@ fun <T : Any> TabsContent(
         verticalAlignment = Alignment.Top
     ) { page ->
         when (page) {
-            0 -> RowSectionItem(list, navController, route)
-            1 -> RowSectionItem(list, navController, route)
-            2 -> RowSectionItem(list, navController, route)
+            0 -> RowSectionItem(list, navController, route, type )
+            1 -> RowSectionItem(list, navController, route,type)
+            2 -> RowSectionItem(list, navController, route, type )
         }
     }
 }
@@ -183,7 +189,8 @@ fun <T : Any> TabsContent(
 fun <T : Any> RowSectionItem(
     list: LazyPagingItems<T>,
     navController: NavController?,
-    route: String
+    route: String,
+    type: String
 ) {
     Column(
         modifier = Modifier
@@ -202,7 +209,7 @@ fun <T : Any> RowSectionItem(
             items(
                 items = list
             ) { item ->
-                navController?.let { RowItem(posterUrl = item, it, route) }
+                navController?.let { RowItem(posterUrl = item, it, route, type) }
             }
         }
     }
@@ -212,8 +219,11 @@ fun <T : Any> RowSectionItem(
 fun RowItem(
     posterUrl: Any?,
     navController: NavController,
-    route: String
+    route: String,
+    type: String
 ) {
+    val context = LocalContext.current
+    val viewModel: FavouritesViewModel = hiltViewModel()
 
     //get poster whether its movie or tv media
     val getMediaPosterUrl = posterUrl?.javaClass?.getDeclaredField("posterPath")
@@ -221,6 +231,15 @@ fun RowItem(
 
     val getId = posterUrl?.javaClass?.getDeclaredField("id")
     getId?.isAccessible = true
+    val getMediaTitle = posterUrl?.javaClass?.getDeclaredField("title")
+    getMediaTitle?.isAccessible = true
+
+    val getReleaseDate = posterUrl?.javaClass?.getDeclaredField("releaseDate")
+    getReleaseDate?.isAccessible = true
+
+    val getRating = posterUrl?.javaClass?.getDeclaredField("voteAverage")
+    getRating?.isAccessible = true
+
     Card(
         modifier = Modifier
             .size(width = 140.dp, height = 220.dp)
@@ -251,7 +270,26 @@ fun RowItem(
                     .fillMaxHeight()
                     .clip(shape = RoundedCornerShape(6.dp))
             )
-            FavoriteButton(modifier = Modifier.padding(12.dp))
+            FavoriteButton( isLiked = viewModel.isAFavorite(getId?.get(posterUrl) as Int).collectAsState(false).value != null,
+                onClick = { isFav ->
+                    if (isFav) {
+                        viewModel.deleteOneFavorite(getId?.get(posterUrl) as Int)
+                        Toast.makeText(context, "Successfully deleted a favourite.", Toast.LENGTH_SHORT).show()
+                        return@FavoriteButton
+                    } else {
+                        viewModel.insertFavorite(
+                            Favourite(
+                                favourite = true,
+                                mediaId = getId?.get(posterUrl) as Int,
+                                mediaType = type,
+                                image = "$IMAGE_BASE_UR/${getMediaPosterUrl?.get(posterUrl)}",
+                                title = getMediaTitle?.get(posterUrl) as String,
+                                releaseDate = getReleaseDate?.get(posterUrl) as String,
+                                rating = getRating?.get(posterUrl) as Float
+                            )
+                        )
+                    }
+                })
             Box(
                 modifier = Modifier
                     .fillMaxSize()
