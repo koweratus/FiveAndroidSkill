@@ -14,6 +14,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,16 +35,15 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
+import com.example.tmdb.data.local.CastLocal
+import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.navigation.RootScreen
 import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.remote.responses.ReviewResponse
 import com.example.tmdb.remote.responses.TvDetails
 import com.example.tmdb.remote.responses.TvResponse
 import com.example.tmdb.screens.details.DetailsViewModel
-import com.example.tmdb.screens.details.common.ImageItem
-import com.example.tmdb.screens.details.common.Overview
-import com.example.tmdb.screens.details.common.TabsContentForSocial
-import com.example.tmdb.screens.details.common.TopBilledCastSectionItem
+import com.example.tmdb.screens.details.common.*
 import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.widgets.SectionText
 import com.example.tmdb.screens.widgets.Tabs
@@ -54,31 +54,84 @@ import com.google.accompanist.pager.rememberPagerState
 
 @ExperimentalPagerApi
 @Composable
-fun TvDetailsScreen(navController: NavController, mediaId: Int?, favouritesViewModel: FavouritesViewModel = hiltViewModel()) {
+fun TvDetailsScreen(
+    navController: NavController,
+    mediaId: Int?,
+    favouritesViewModel: FavouritesViewModel = hiltViewModel()
+) {
     val viewModel: DetailsViewModel = hiltViewModel()
+
     val details = produceState<Resource<TvDetails>>(initialValue = Resource.Loading()) {
         value = viewModel.getTvDetails(mediaId)
     }.value
     val casts = produceState<Resource<CreditsResponse>>(initialValue = Resource.Loading()) {
         value = viewModel.getTvCasts(mediaId!!)
     }.value
+
     val review = produceState<Resource<ReviewResponse>>(initialValue = Resource.Loading()) {
         value = viewModel.getTvReviews(mediaId!!)
     }.value
-
     val recommendation = produceState<Resource<TvResponse>>(initialValue = Resource.Loading()) {
         value = viewModel.getTvRecommendations(mediaId!!)
     }.value
+
     val pagerState = rememberPagerState(initialPage = 0)
     val listFirstTab = listOf(
         stringResource(R.string.reviews), stringResource(R.string.discussions)
     )
+    val favoriteFilms = favouritesViewModel.getAFavorites(mediaId!!).collectAsState(
+        initial = Favourite(
+            mediaId = mediaId,
+            mediaType = "",
+            image = "",
+            rating = 0f,
+            favourite = false,
+            releaseDate = "",
+            title = "",
+            runTime = "",
+            genres = "",
+            overview = ""
+        )
+    ).value
+
+    val castLocal = favouritesViewModel.getCast(mediaId!!).collectAsState(
+        initial = CastLocal(
+            profilePath = "",
+            popularity = 0.0,
+            originalName = "",
+            order = 0,
+            name = "",
+            knownForDepartment = "",
+            id = 0,
+            gender = 0,
+            creditId = "",
+            character = "",
+            adult = false,
+            castId = 0
+        )
+    ).value
 
     LazyColumn(
-        verticalArrangement = Arrangement.SpaceEvenly
+        verticalArrangement = Arrangement.SpaceEvenly,
     ) {
+
         item {
-            details.data?.let {
+
+            if (details is Resource.Error) {
+                ImageItem(
+                    mediaPosterUrl = favoriteFilms!!.image,
+                    mediaName = favoriteFilms.title,
+                    mediaReleaseDate = favoriteFilms.releaseDate,
+                    rating = favoriteFilms.rating,
+                    genres = favoriteFilms.genres.replace(oldChar = ',', newChar =' ' ),
+                    runTime = favoriteFilms.runTime,
+                    viewModel = favouritesViewModel,
+                    mediaId = favoriteFilms.mediaId,
+                    mediaType = "tv",
+                    overview = favoriteFilms.overview,
+                    casts = casts
+                )
+            } else {
                 ImageItem(
                     mediaPosterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
                     mediaName = details.data?.name.toString(),
@@ -89,15 +142,21 @@ fun TvDetailsScreen(navController: NavController, mediaId: Int?, favouritesViewM
                     }.toString(),
                     runTime = details.data?.episodeRunTime.toString(),
                     viewModel = favouritesViewModel,
-                    mediaId = it.id,
-                    mediaType = "movie"
-
+                    mediaId = details.data?.id ?: mediaId,
+                    mediaType = "tv",
+                    overview = details.data?.overview.toString(),
+                    casts = casts
                 )
             }
+
+
+
             Overview(navController, casts = casts, overview = details.data?.overview.toString())
             SectionText("Top Billed Cast")
             if (casts is Resource.Success) {
                 TopBilledCastSectionItem(list = casts.data!!)
+            }else{
+                TopBilledCastSectionItemOffline()
             }
             Spacer(Modifier.padding(35.dp))
             SectionText(stringResource(R.string.social))
@@ -165,7 +224,7 @@ private fun RowItemRecommendations(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(bounded = true, color = Color.Black),
                     onClick = {
-                        navController.navigate(RootScreen.TvDetails.route +"/${id}")
+                        navController.navigate(RootScreen.TvDetails.route + "/${id}")
                     }
                 ),
             shape = RoundedCornerShape(15.dp),

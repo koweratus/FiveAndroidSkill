@@ -1,9 +1,6 @@
 package com.example.tmdb.data.local
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -11,6 +8,15 @@ interface TmdbDao {
 
     @Insert
     suspend fun insertFavourite(favourite: Favourite)
+
+    @Insert
+    suspend fun insertCast(cast: CastLocal)
+
+    @Query("SELECT * FROM cast_table WHERE castId = :mediaId")
+    fun getCast(mediaId: Int): Flow<CastLocal?>
+
+    @Query("SELECT * FROM cast_table ORDER BY name DESC")
+    fun getAllCast(): Flow<List<CastLocal>>
 
     @Query("SELECT * FROM tmdb_table ORDER BY mediaId DESC")
     fun getAllFavourites(): Flow<List<Favourite>>

@@ -1,5 +1,6 @@
 package com.example.tmdb.repository
 
+import com.example.tmdb.data.local.CastLocal
 import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.data.local.TmdbDatabase
 import kotlinx.coroutines.flow.Flow
@@ -9,13 +10,22 @@ class FavouritesRepository @Inject constructor(private val database: TmdbDatabas
     suspend fun insertFavorite(favorite: Favourite) {
         database.dao.insertFavourite(favorite)
     }
-
+    suspend fun insertCast(castLocal: CastLocal) {
+        database.dao.insertCast(castLocal)
+    }
     fun getFavorites(): Flow<List<Favourite>> {
         return database.dao.getAllFavourites()
+    }
+    fun getCasts(): Flow<List<CastLocal>> {
+        return database.dao.getAllCast()
     }
 
     fun isFavorite(mediaId: Int): Flow<Boolean> {
         return database.dao.isFavourite(mediaId)
+    }
+
+    fun getCast(mediaId: Int): Flow<CastLocal?> {
+        return database.dao.getCast(mediaId)
     }
 
     fun getAFavorites(mediaId: Int): Flow<Favourite?> {

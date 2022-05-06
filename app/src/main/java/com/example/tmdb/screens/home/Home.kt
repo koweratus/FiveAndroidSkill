@@ -101,19 +101,19 @@ fun TabScreen(navController: NavController) {
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     popularMovies,
-                    navController, RootScreen.MovieDetails.route,"movie"
+                    navController, RootScreen.MovieDetails.route, "movie"
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     popularTv,
-                    navController, RootScreen.TvDetails.route,"tv"
+                    navController, RootScreen.TvDetails.route, "tv"
                 )
                 2 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     upcomingMovies,
-                    navController, RootScreen.MovieDetails.route,"movie"
+                    navController, RootScreen.MovieDetails.route, "movie"
                 )
             }
             Spacer(modifier = Modifier.padding(20.dp))
@@ -125,12 +125,12 @@ fun TabScreen(navController: NavController) {
                 0 -> TabsContent(
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
-                    nowPlayingMovies, navController, RootScreen.MovieDetails.route,"movie"
+                    nowPlayingMovies, navController, RootScreen.MovieDetails.route, "movie"
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
-                    onAirTv, navController, RootScreen.TvDetails.route,"tv"
+                    onAirTv, navController, RootScreen.TvDetails.route, "tv"
                 )
             }
 
@@ -145,14 +145,14 @@ fun TabScreen(navController: NavController) {
                     listThirdTab.size,
                     trendingMoviesDay,
                     navController,
-                    RootScreen.MovieDetails.route,"movie"
+                    RootScreen.MovieDetails.route, "movie"
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateThirdTab,
                     listThirdTab.size,
                     trendingMoviesWeek,
                     navController,
-                    RootScreen.MovieDetails.route,"movie"
+                    RootScreen.MovieDetails.route, "movie"
                 )
             }
             Spacer(modifier = Modifier.padding(40.dp))
@@ -177,9 +177,9 @@ fun <T : Any> TabsContent(
         verticalAlignment = Alignment.Top
     ) { page ->
         when (page) {
-            0 -> RowSectionItem(list, navController, route, type )
-            1 -> RowSectionItem(list, navController, route,type)
-            2 -> RowSectionItem(list, navController, route, type )
+            0 -> RowSectionItem(list, navController, route, type)
+            1 -> RowSectionItem(list, navController, route, type)
+            2 -> RowSectionItem(list, navController, route, type)
         }
     }
 }
@@ -240,6 +240,11 @@ fun RowItem(
     val getRating = posterUrl?.javaClass?.getDeclaredField("voteAverage")
     getRating?.isAccessible = true
 
+    val getOverview = posterUrl?.javaClass?.getDeclaredField("overview")
+    getOverview?.isAccessible = true
+
+    //val getRunTime = posterUrl?.javaClass?.getDeclaredField("runTime")
+   // getRunTime?.isAccessible = true
     Card(
         modifier = Modifier
             .size(width = 140.dp, height = 220.dp)
@@ -270,11 +275,16 @@ fun RowItem(
                     .fillMaxHeight()
                     .clip(shape = RoundedCornerShape(6.dp))
             )
-            FavoriteButton( isLiked = viewModel.isAFavorite(getId?.get(posterUrl) as Int).collectAsState(false).value != null,
+            FavoriteButton(isLiked = viewModel.isAFavorite(getId?.get(posterUrl) as Int)
+                .collectAsState(false).value != null,
                 onClick = { isFav ->
                     if (isFav) {
                         viewModel.deleteOneFavorite(getId?.get(posterUrl) as Int)
-                        Toast.makeText(context, "Successfully deleted a favourite.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "Successfully deleted a favourite.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         return@FavoriteButton
                     } else {
                         viewModel.insertFavorite(
@@ -285,7 +295,10 @@ fun RowItem(
                                 image = "$IMAGE_BASE_UR/${getMediaPosterUrl?.get(posterUrl)}",
                                 title = getMediaTitle?.get(posterUrl) as String,
                                 releaseDate = getReleaseDate?.get(posterUrl) as String,
-                                rating = getRating?.get(posterUrl) as Float
+                                rating = getRating?.get(posterUrl) as Float,
+                                runTime = "",
+                                genres = "",
+                                overview = getOverview?.get(posterUrl) as String
                             )
                         )
                     }

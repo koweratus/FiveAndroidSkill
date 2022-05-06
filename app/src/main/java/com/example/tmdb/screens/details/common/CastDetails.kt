@@ -12,6 +12,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,21 +24,20 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.room.util.TableInfo
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
+import com.example.tmdb.data.local.CastLocal
 import com.example.tmdb.remote.responses.CreditsResponse
+import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.utils.Constants
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 @Composable
 fun CastDetails(creditsResponse: CreditsResponse?) {
-    var castName: String? = null
-    creditsResponse?.cast?.forEach {
-        castName = it.name
-    }.toString()
 
-    println(castName)
     Column {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -48,6 +48,7 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
         ) {
             for (i in creditsResponse?.cast!!.take(3)) {
                 CastInfo(castName = i.name, R.font.proximanova_bold)
+
             }
         }
         Row(
@@ -179,6 +180,40 @@ fun TopBilledCastSectionItem(
         ) {
             items(
                 list?.cast!!
+            ) { item ->
+                TopBilledCastItem(
+                    castName = item.name,
+                    castKnownFor = item.knownForDepartment,
+                    castPhoto = "${Constants.IMAGE_BASE_UR}/${item.profilePath}"
+                )
+            }
+        }
+    }
+}
+
+@ExperimentalPagerApi
+@Composable
+fun TopBilledCastSectionItemOffline(
+) {
+    val favouritesViewModel: FavouritesViewModel = hiltViewModel()
+    val castLocal = favouritesViewModel.casts.collectAsState(initial = emptyList())
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(top = 20.dp)
+    ) {
+        LazyRow(
+            state = rememberLazyListState(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(top = 5.dp, start = 16.dp, end = 16.dp)
+        ) {
+            items(
+                items = castLocal.value
             ) { item ->
                 TopBilledCastItem(
                     castName = item.name,

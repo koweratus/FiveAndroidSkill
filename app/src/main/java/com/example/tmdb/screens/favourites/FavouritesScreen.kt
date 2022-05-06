@@ -118,18 +118,6 @@ fun GridItem(
                         viewModel.deleteOneFavorite(moviesData.mediaId)
                         Toast.makeText(context, "Successfully deleted a favourite.", Toast.LENGTH_SHORT).show()
                         return@FavoriteButton
-                    } else {
-                        viewModel.insertFavorite(
-                            Favourite(
-                                favourite = true,
-                                mediaId = moviesData.mediaId,
-                                mediaType = moviesData.mediaType,
-                                image = moviesData.image,
-                                title = moviesData.title,
-                                releaseDate = moviesData.releaseDate,
-                                rating = moviesData.rating
-                            )
-                        )
                     }
                 }
             )

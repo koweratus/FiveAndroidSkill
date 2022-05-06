@@ -3,6 +3,7 @@ package com.example.tmdb.screens.favourites
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tmdb.data.local.CastLocal
 import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.repository.FavouritesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,14 +17,30 @@ class FavouritesViewModel @Inject constructor(private val repository: Favourites
 
     val favourites = repository.getFavorites()
 
+    val casts = repository.getCasts()
+
     fun insertFavorite(favorite: Favourite) {
         viewModelScope.launch {
             repository.insertFavorite(favorite)
         }
     }
 
+    fun insertCast(castLocal: CastLocal) {
+        viewModelScope.launch {
+            repository.insertCast(castLocal)
+        }
+    }
+
     fun isAFavorite(mediaId: Int): Flow<Boolean> {
         return repository.isFavorite(mediaId)
+    }
+
+    fun getCast(mediaId: Int): Flow<CastLocal?> {
+        return repository.getCast(mediaId)
+    }
+
+    fun getAFavorites(mediaId: Int): Flow<Favourite?> {
+        return repository.getAFavorites(mediaId)
     }
 
     fun deleteOneFavorite(mediaId: Int) {

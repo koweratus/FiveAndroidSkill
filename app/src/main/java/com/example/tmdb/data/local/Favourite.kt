@@ -12,5 +12,8 @@ data class Favourite(
     val image: String,
     val title: String,
     val releaseDate: String,
-    val rating: Float
+    val rating: Float,
+    val genres: String,
+    val runTime: String,
+    val overview: String,
     )

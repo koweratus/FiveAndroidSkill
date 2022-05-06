@@ -93,7 +93,9 @@ fun MovieDetailsScreen(navController: NavController, mediaId: Int?,favouritesVie
                         runTime = details.data.runtime.toString(),
                         viewModel = favouritesViewModel,
                         mediaId = it1,
-                        mediaType = "movie"
+                        mediaType = "movie",
+                        overview = details.data?.overview.toString(),
+                        casts = casts
                     )
                 }
             }

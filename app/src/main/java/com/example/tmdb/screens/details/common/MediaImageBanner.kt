@@ -30,9 +30,12 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
+import com.example.tmdb.data.local.CastLocal
 import com.example.tmdb.data.local.Favourite
+import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.widgets.FavoriteButton
+import com.example.tmdb.utils.Resource
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.observeOn
 
@@ -46,7 +49,9 @@ fun ImageItem(
     runTime: String,
     viewModel: FavouritesViewModel,
     mediaType: String,
-    mediaId: Int
+    overview: String,
+    mediaId: Int,
+    casts: Resource<CreditsResponse>
 ) {
     val context = LocalContext.current
 
@@ -154,9 +159,31 @@ fun ImageItem(
                                 image = mediaPosterUrl,
                                 title = mediaName,
                                 releaseDate = mediaReleaseDate,
-                                rating = rating!!
+                                rating = rating!!,
+                                genres = genres,
+                                runTime = runTime,
+                                overview = overview
                             )
                         )
+                        casts.data?.cast?.forEach {
+                            viewModel.insertCast(
+                                CastLocal(
+                                    castId = mediaId,
+                                    adult = false,
+                                    character = it.character,
+                                    creditId = it.creditId,
+                                    gender = it.gender,
+                                    id = it.id,
+                                    knownForDepartment = it.knownForDepartment,
+                                    name = it.name,
+                                    order = it.order,
+                                    originalName = it.originalName,
+                                    popularity = it.popularity,
+                                    profilePath = it.profilePath
+                                )
+                            )
+                        }
+
                     }
                 }
             )
