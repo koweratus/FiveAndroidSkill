@@ -36,6 +36,10 @@ class FavouritesRepository @Inject constructor(private val database: TmdbDatabas
         database.dao.deleteFavourite(mediaId)
     }
 
+    suspend fun deleteCast(mediaId: Int) {
+        database.dao.deleteCast(mediaId)
+    }
+
     suspend fun deleteAllFavorites() {
         database.dao.deleteAllFavourites()
     }

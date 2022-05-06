@@ -50,6 +50,8 @@ fun Overview(
         item {
             if (casts is Resource.Success) {
                 CastDetails(casts.data!!)
+            }else{
+                CastDetailsOffline()
             }
         }
 

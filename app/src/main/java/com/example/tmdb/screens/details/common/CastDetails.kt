@@ -224,3 +224,58 @@ fun TopBilledCastSectionItemOffline(
         }
     }
 }
+
+@Composable
+fun CastDetailsOffline() {
+
+    val favouritesViewModel: FavouritesViewModel = hiltViewModel()
+    val castLocal = favouritesViewModel.casts.collectAsState(initial = emptyList())
+
+    Column {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            for (i in castLocal?.value!!.take(3)) {
+                CastInfo(castName = i.name, R.font.proximanova_bold)
+
+            }
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            for (i in castLocal?.value!!.take(3)) {
+                CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
+            }
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            for (i in castLocal?.value!!.takeLast(3)) {
+                CastInfo(castName = i.name, R.font.proximanova_bold)
+            }
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            for (i in castLocal?.value!!.takeLast(3)) {
+                CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
+            }
+        }
+    }
+}

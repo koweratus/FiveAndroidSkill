@@ -148,6 +148,7 @@ fun ImageItem(
                 onClick = { isFav ->
                     if (isFav) {
                         viewModel.deleteOneFavorite(mediaId)
+                        viewModel.deleteCast(mediaId)
                         Toast.makeText(context, "Successfully deleted a favourite.", Toast.LENGTH_SHORT).show()
                         return@FavoriteButton
                     } else {

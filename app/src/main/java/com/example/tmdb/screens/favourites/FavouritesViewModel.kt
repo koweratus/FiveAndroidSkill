@@ -49,6 +49,12 @@ class FavouritesViewModel @Inject constructor(private val repository: Favourites
         }
     }
 
+    fun deleteCast(mediaId: Int) {
+        viewModelScope.launch {
+            repository.deleteCast(mediaId)
+        }
+    }
+
     fun deleteAllFavorites() {
         viewModelScope.launch {
             repository.deleteAllFavorites()

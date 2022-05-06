@@ -30,6 +30,9 @@ interface TmdbDao {
     @Query("DELETE FROM tmdb_table WHERE mediaId = :mediaId")
     suspend fun deleteFavourite(mediaId: Int)
 
+    @Query("DELETE FROM cast_table WHERE castId = :mediaId")
+    suspend fun deleteCast(mediaId: Int)
+
     @Query("DELETE FROM tmdb_table")
     suspend fun deleteAllFavourites()
 }

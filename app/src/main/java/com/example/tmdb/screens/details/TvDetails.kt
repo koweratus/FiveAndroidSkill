@@ -94,22 +94,6 @@ fun TvDetailsScreen(
         )
     ).value
 
-    val castLocal = favouritesViewModel.getCast(mediaId!!).collectAsState(
-        initial = CastLocal(
-            profilePath = "",
-            popularity = 0.0,
-            originalName = "",
-            order = 0,
-            name = "",
-            knownForDepartment = "",
-            id = 0,
-            gender = 0,
-            creditId = "",
-            character = "",
-            adult = false,
-            castId = 0
-        )
-    ).value
 
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -131,6 +115,7 @@ fun TvDetailsScreen(
                     overview = favoriteFilms.overview,
                     casts = casts
                 )
+                Overview(navController, casts = casts, overview = favoriteFilms.overview)
             } else {
                 ImageItem(
                     mediaPosterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
@@ -147,11 +132,12 @@ fun TvDetailsScreen(
                     overview = details.data?.overview.toString(),
                     casts = casts
                 )
+                Overview(navController, casts = casts, overview = details.data?.overview.toString())
             }
 
 
 
-            Overview(navController, casts = casts, overview = details.data?.overview.toString())
+
             SectionText("Top Billed Cast")
             if (casts is Resource.Success) {
                 TopBilledCastSectionItem(list = casts.data!!)
