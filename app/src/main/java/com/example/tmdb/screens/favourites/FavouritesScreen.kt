@@ -116,6 +116,9 @@ fun GridItem(
                 onClick = { isFav ->
                     if (isFav) {
                         viewModel.deleteOneFavorite(moviesData.mediaId)
+                        viewModel.deleteCast(moviesData.mediaId)
+                        viewModel.deleteCrew(moviesData.mediaId)
+                        viewModel.deleteFavouritesWithCastCrossRef(moviesData.mediaId)
                         Toast.makeText(context, "Successfully deleted a favourite.", Toast.LENGTH_SHORT).show()
                         return@FavoriteButton
                     }

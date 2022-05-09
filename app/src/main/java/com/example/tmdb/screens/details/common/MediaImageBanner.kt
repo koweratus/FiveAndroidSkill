@@ -7,10 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -31,13 +27,13 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
 import com.example.tmdb.data.local.CastLocal
+import com.example.tmdb.data.local.CrewLocal
 import com.example.tmdb.data.local.Favourite
+import com.example.tmdb.data.local.FavouritesWithCastCrossRef
 import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.widgets.FavoriteButton
 import com.example.tmdb.utils.Resource
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.observeOn
 
 @Composable
 fun ImageItem(
@@ -149,6 +145,8 @@ fun ImageItem(
                     if (isFav) {
                         viewModel.deleteOneFavorite(mediaId)
                         viewModel.deleteCast(mediaId)
+                        viewModel.deleteCrew(mediaId)
+                        viewModel.deleteFavouritesWithCastCrossRef(mediaId)
                         Toast.makeText(context, "Successfully deleted a favourite.", Toast.LENGTH_SHORT).show()
                         return@FavoriteButton
                     } else {
@@ -169,7 +167,7 @@ fun ImageItem(
                         casts.data?.cast?.forEach {
                             viewModel.insertCast(
                                 CastLocal(
-                                    castId = mediaId,
+                                    castId = it.castId,
                                     adult = false,
                                     character = it.character,
                                     creditId = it.creditId,
@@ -180,7 +178,32 @@ fun ImageItem(
                                     order = it.order,
                                     originalName = it.originalName,
                                     popularity = it.popularity,
-                                    profilePath = it.profilePath
+                                    profilePath = it.profilePath,
+                                    movieIdForCast = mediaId
+                                )
+                            )
+                            viewModel.insertFavouritesWithCast(
+                                FavouritesWithCastCrossRef(
+                                    id = it.id,
+                                   mediaId = mediaId
+                                )
+                            )
+                        }
+                        casts.data?.crew?.forEach {
+                            viewModel.insertCrew(
+                                CrewLocal(
+                                    adult = false,
+                                    creditId = it.creditId,
+                                    gender = it.gender,
+                                    id = it.id,
+                                    knownForDepartment = it.knownForDepartment,
+                                    name = it.name,
+                                    originalName = it.originalName,
+                                    popularity = it.popularity,
+                                    profilePath = it.profilePath,
+                                    movieIdForCrew = mediaId,
+                                    department = it.department,
+                                    job = it.job
                                 )
                             )
                         }

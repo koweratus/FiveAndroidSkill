@@ -30,10 +30,15 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
 import com.example.tmdb.data.local.CastLocal
+import com.example.tmdb.data.local.Favourite
+import com.example.tmdb.data.local.FavouritesWithCast
+import com.example.tmdb.data.local.FavouritesWithCrew
 import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.utils.Constants
+import com.example.tmdb.utils.Resource
 import com.google.accompanist.pager.ExperimentalPagerApi
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun CastDetails(creditsResponse: CreditsResponse?) {
@@ -46,7 +51,7 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in creditsResponse?.cast!!.take(3)) {
+            for (i in creditsResponse?.crew!!.take(3)) {
                 CastInfo(castName = i.name, R.font.proximanova_bold)
 
             }
@@ -58,7 +63,7 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in creditsResponse?.cast!!.take(3)) {
+            for (i in creditsResponse?.crew!!.take(3)) {
                 CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
             }
         }
@@ -69,7 +74,7 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in creditsResponse?.cast!!.takeLast(3)) {
+            for (i in creditsResponse?.crew!!.takeLast(3)) {
                 CastInfo(castName = i.name, R.font.proximanova_bold)
             }
         }
@@ -80,7 +85,7 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in creditsResponse?.cast!!.takeLast(3)) {
+            for (i in creditsResponse?.crew!!.takeLast(3)) {
                 CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
             }
         }
@@ -193,10 +198,25 @@ fun TopBilledCastSectionItem(
 
 @ExperimentalPagerApi
 @Composable
-fun TopBilledCastSectionItemOffline(
-) {
+fun TopBilledCastSectionItemOffline(mediaId: Int) {
     val favouritesViewModel: FavouritesViewModel = hiltViewModel()
-    val castLocal = favouritesViewModel.casts.collectAsState(initial = emptyList())
+    val castLocal = favouritesViewModel.getFavouritesWithCast(mediaId).collectAsState(
+        initial = FavouritesWithCast(
+            castLocal = emptyList(),
+            favourite = Favourite(
+                mediaId = mediaId,
+                mediaType = "",
+                image = "",
+                rating = 0f,
+                favourite = false,
+                releaseDate = "",
+                title = "",
+                runTime = "",
+                genres = "",
+                overview = ""
+            )
+        )
+    ).value
 
     Column(
         modifier = Modifier
@@ -213,7 +233,7 @@ fun TopBilledCastSectionItemOffline(
                 .padding(top = 5.dp, start = 16.dp, end = 16.dp)
         ) {
             items(
-                items = castLocal.value
+                items = castLocal.castLocal
             ) { item ->
                 TopBilledCastItem(
                     castName = item.name,
@@ -226,10 +246,26 @@ fun TopBilledCastSectionItemOffline(
 }
 
 @Composable
-fun CastDetailsOffline() {
+fun CastDetailsOffline(mediaId: Int) {
 
     val favouritesViewModel: FavouritesViewModel = hiltViewModel()
-    val castLocal = favouritesViewModel.casts.collectAsState(initial = emptyList())
+    val crewLocal = favouritesViewModel.getFavouritesWithCrew(mediaId).collectAsState(
+        initial = FavouritesWithCrew(
+            crewLocal = emptyList(),
+            favourite = Favourite(
+                mediaId = mediaId,
+                mediaType = "",
+                image = "",
+                rating = 0f,
+                favourite = false,
+                releaseDate = "",
+                title = "",
+                runTime = "",
+                genres = "",
+                overview = ""
+            )
+        )
+    ).value
 
     Column {
         Row(
@@ -239,9 +275,8 @@ fun CastDetailsOffline() {
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in castLocal?.value!!.take(3)) {
+            for (i in crewLocal.crewLocal.take(3)) {
                 CastInfo(castName = i.name, R.font.proximanova_bold)
-
             }
         }
         Row(
@@ -251,7 +286,7 @@ fun CastDetailsOffline() {
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in castLocal?.value!!.take(3)) {
+            for (i in crewLocal.crewLocal.take(3)) {
                 CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
             }
         }
@@ -262,7 +297,7 @@ fun CastDetailsOffline() {
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in castLocal?.value!!.takeLast(3)) {
+            for (i in crewLocal.crewLocal.takeLast(3)) {
                 CastInfo(castName = i.name, R.font.proximanova_bold)
             }
         }
@@ -273,7 +308,7 @@ fun CastDetailsOffline() {
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in castLocal?.value!!.takeLast(3)) {
+            for (i in crewLocal.crewLocal.takeLast(3)) {
                 CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
             }
         }

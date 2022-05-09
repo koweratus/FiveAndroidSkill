@@ -14,6 +14,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +33,14 @@ import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
+import com.example.tmdb.data.local.CastLocal
+import com.example.tmdb.data.local.CrewLocal
 import com.example.tmdb.data.local.Favourite
+import com.example.tmdb.data.local.FavouritesWithCastCrossRef
 import com.example.tmdb.navigation.RootScreen
+import com.example.tmdb.remote.responses.CreditsResponse
+import com.example.tmdb.remote.responses.TvDetails
+import com.example.tmdb.screens.details.DetailsViewModel
 import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.home.HomeViewModel
 import com.example.tmdb.screens.widgets.FavoriteButton
@@ -41,11 +48,12 @@ import com.example.tmdb.screens.widgets.SearchAppBar
 import com.example.tmdb.screens.widgets.SectionText
 import com.example.tmdb.screens.widgets.Tabs
 import com.example.tmdb.utils.Constants.IMAGE_BASE_UR
+import com.example.tmdb.utils.Resource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.emptyFlow
 
 @ExperimentalPagerApi
 @Composable
@@ -68,6 +76,7 @@ fun TabScreen(navController: NavController) {
 
     val onAirTv = viewModel.onAirTv.collectAsLazyPagingItems()
     val popularTv = viewModel.popularTv.collectAsLazyPagingItems()
+
 
     val pagerStateFirstTab = rememberPagerState(initialPage = 0)
     val pagerStateSecondTab = rememberPagerState(initialPage = 0)
@@ -102,18 +111,21 @@ fun TabScreen(navController: NavController) {
                     listFirstTab.size,
                     popularMovies,
                     navController, RootScreen.MovieDetails.route, "movie"
+
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     popularTv,
                     navController, RootScreen.TvDetails.route, "tv"
+
                 )
                 2 -> TabsContent(
                     pagerState = pagerStateFirstTab,
                     listFirstTab.size,
                     upcomingMovies,
                     navController, RootScreen.MovieDetails.route, "movie"
+
                 )
             }
             Spacer(modifier = Modifier.padding(20.dp))
@@ -126,11 +138,13 @@ fun TabScreen(navController: NavController) {
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
                     nowPlayingMovies, navController, RootScreen.MovieDetails.route, "movie"
+
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateSecondTab,
                     listSecondTab.size,
                     onAirTv, navController, RootScreen.TvDetails.route, "tv"
+
                 )
             }
 
@@ -146,6 +160,7 @@ fun TabScreen(navController: NavController) {
                     trendingMoviesDay,
                     navController,
                     RootScreen.MovieDetails.route, "movie"
+
                 )
                 1 -> TabsContent(
                     pagerState = pagerStateThirdTab,
@@ -153,6 +168,7 @@ fun TabScreen(navController: NavController) {
                     trendingMoviesWeek,
                     navController,
                     RootScreen.MovieDetails.route, "movie"
+
                 )
             }
             Spacer(modifier = Modifier.padding(40.dp))
@@ -169,8 +185,11 @@ fun <T : Any> TabsContent(
     list: LazyPagingItems<T>,
     navController: NavController,
     route: String,
-    type: String
+    type: String,
 ) {
+    if (type == "movie") {
+        System.out.println("AHAHAHAHAHAH")
+    }
     HorizontalPager(
         count,
         state = pagerState,
@@ -190,7 +209,7 @@ fun <T : Any> RowSectionItem(
     list: LazyPagingItems<T>,
     navController: NavController?,
     route: String,
-    type: String
+    type: String,
 ) {
     Column(
         modifier = Modifier
@@ -243,8 +262,18 @@ fun RowItem(
     val getOverview = posterUrl?.javaClass?.getDeclaredField("overview")
     getOverview?.isAccessible = true
 
+    val detailsViewModel: DetailsViewModel = hiltViewModel()
+
+    val tvCasts = produceState<Resource<CreditsResponse>>(initialValue = Resource.Loading()) {
+        value = detailsViewModel.getTvCasts(getId?.get(posterUrl) as Int)
+    }.value
+    val movieCasts = produceState<Resource<CreditsResponse>>(initialValue = Resource.Loading()) {
+        value = detailsViewModel.getMovieCasts(getId?.get(posterUrl) as Int)
+    }.value
+
+
     //val getRunTime = posterUrl?.javaClass?.getDeclaredField("runTime")
-   // getRunTime?.isAccessible = true
+    // getRunTime?.isAccessible = true
     Card(
         modifier = Modifier
             .size(width = 140.dp, height = 220.dp)
@@ -280,6 +309,9 @@ fun RowItem(
                 onClick = { isFav ->
                     if (isFav) {
                         viewModel.deleteOneFavorite(getId?.get(posterUrl) as Int)
+                        viewModel.deleteCast(getId?.get(posterUrl) as Int)
+                        viewModel.deleteCrew(getId?.get(posterUrl) as Int)
+                        viewModel.deleteFavouritesWithCastCrossRef(getId?.get(posterUrl) as Int)
                         Toast.makeText(
                             context,
                             "Successfully deleted a favourite.",
@@ -301,6 +333,98 @@ fun RowItem(
                                 overview = getOverview?.get(posterUrl) as String
                             )
                         )
+                        if (type == "movie") {
+                            movieCasts?.data?.cast?.forEach {
+                                viewModel.insertCast(
+                                    CastLocal(
+                                        castId = it.castId,
+                                        adult = false,
+                                        character = it.character,
+                                        creditId = it.creditId,
+                                        gender = it.gender,
+                                        id = it.id,
+                                        knownForDepartment = it.knownForDepartment,
+                                        name = it.name,
+                                        order = it.order,
+                                        originalName = it.originalName,
+                                        popularity = it.popularity,
+                                        profilePath = it.profilePath,
+                                        movieIdForCast = getId?.get(posterUrl) as Int
+                                    )
+                                )
+                                viewModel.insertFavouritesWithCast(
+                                    FavouritesWithCastCrossRef(
+                                        id = it.id,
+                                        mediaId = getId?.get(posterUrl) as Int
+                                    )
+                                )
+                            }
+                            movieCasts.data?.crew?.forEach {
+                                viewModel.insertCrew(
+                                    CrewLocal(
+                                        adult = false,
+                                        creditId = it.creditId,
+                                        gender = it.gender,
+                                        id = it.id,
+                                        knownForDepartment = it.knownForDepartment,
+                                        name = it.name,
+                                        originalName = it.originalName,
+                                        popularity = it.popularity,
+                                        profilePath = it.profilePath,
+                                        movieIdForCrew =  getId?.get(posterUrl) as Int,
+                                        department = it.department,
+                                        job = it.job
+                                    )
+                                )
+                            }
+
+                        } else {
+                            tvCasts?.data?.cast?.forEach {
+                                viewModel.insertCast(
+                                    CastLocal(
+                                        castId = it.castId,
+                                        adult = false,
+                                        character = it.character,
+                                        creditId = it.creditId,
+                                        gender = it.gender,
+                                        id = it.id,
+                                        knownForDepartment = it.knownForDepartment,
+                                        name = it.name,
+                                        order = it.order,
+                                        originalName = it.originalName,
+                                        popularity = it.popularity,
+                                        profilePath = it.profilePath,
+                                        movieIdForCast = getId?.get(posterUrl) as Int
+                                    )
+                                )
+                                viewModel.insertFavouritesWithCast(
+                                    FavouritesWithCastCrossRef(
+                                        id = it.id,
+                                        mediaId = getId?.get(posterUrl) as Int
+                                    )
+                                )
+                            }
+                            tvCasts.data?.crew?.forEach {
+                                viewModel.insertCrew(
+                                    CrewLocal(
+                                        adult = false,
+                                        creditId = it.creditId,
+                                        gender = it.gender,
+                                        id = it.id,
+                                        knownForDepartment = it.knownForDepartment,
+                                        name = it.name,
+                                        originalName = it.originalName,
+                                        popularity = it.popularity,
+                                        profilePath = it.profilePath,
+                                        movieIdForCrew =  getId?.get(posterUrl) as Int,
+                                        department = it.department,
+                                        job = it.job
+                                    )
+                                )
+                            }
+
+                        }
+
                     }
                 })
             Box(
@@ -317,6 +441,7 @@ fun RowItem(
                     )
             )
         }
+
     }
 }
 

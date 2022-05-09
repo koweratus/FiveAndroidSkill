@@ -26,7 +26,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 fun Overview(
     navController: NavController,
     overview: String,
-    casts: Resource<CreditsResponse>
+    casts: Resource<CreditsResponse>,
+    mediaId: Int
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -49,12 +50,44 @@ fun Overview(
         }
         item {
             if (casts is Resource.Success) {
-                CastDetails(casts.data!!)
-            }else{
-                CastDetailsOffline()
-            }
-        }
+                CastDetails(casts.data)
 
+            }
+
+
+        }
+    }
+}
+
+@ExperimentalPagerApi
+@Composable
+fun OverviewOffline(
+    overview: String,
+    mediaId: Int
+) {
+    LazyColumn(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.height(300.dp)
+    ) {
+
+        item {
+            SectionText("Overview")
+            Text(
+                text = overview,
+                color = Color.Black,
+                textAlign = TextAlign.Justify,
+                fontFamily = FontFamily(Font(R.font.proximanova_regular)),
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 10.dp)
+                    .fillMaxWidth(.8f),
+                softWrap = true
+            )
+        }
+        item {
+            CastDetailsOffline(mediaId)
+        }
 
     }
 }
+

@@ -3,8 +3,7 @@ package com.example.tmdb.screens.favourites
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tmdb.data.local.CastLocal
-import com.example.tmdb.data.local.Favourite
+import com.example.tmdb.data.local.*
 import com.example.tmdb.repository.FavouritesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -16,8 +15,6 @@ class FavouritesViewModel @Inject constructor(private val repository: Favourites
     ViewModel() {
 
     val favourites = repository.getFavorites()
-
-    val casts = repository.getCasts()
 
     fun insertFavorite(favorite: Favourite) {
         viewModelScope.launch {
@@ -31,16 +28,20 @@ class FavouritesViewModel @Inject constructor(private val repository: Favourites
         }
     }
 
+    fun insertCrew(crewLocal: CrewLocal) {
+        viewModelScope.launch {
+            repository.insertCrew(crewLocal)
+        }
+    }
+
+    fun insertFavouritesWithCast(join: FavouritesWithCastCrossRef) {
+        viewModelScope.launch {
+            repository.insertFavouritesWithCast(join)
+        }
+    }
+
     fun isAFavorite(mediaId: Int): Flow<Boolean> {
         return repository.isFavorite(mediaId)
-    }
-
-    fun getCast(mediaId: Int): Flow<CastLocal?> {
-        return repository.getCast(mediaId)
-    }
-
-    fun getAFavorites(mediaId: Int): Flow<Favourite?> {
-        return repository.getAFavorites(mediaId)
     }
 
     fun deleteOneFavorite(mediaId: Int) {
@@ -55,9 +56,23 @@ class FavouritesViewModel @Inject constructor(private val repository: Favourites
         }
     }
 
-    fun deleteAllFavorites() {
+    fun deleteCrew(mediaId: Int) {
         viewModelScope.launch {
-            repository.deleteAllFavorites()
+            repository.deleteCrew(mediaId)
         }
+    }
+
+    fun deleteFavouritesWithCastCrossRef(mediaId: Int) {
+        viewModelScope.launch {
+            repository.deleteFavouritesWithCastCrossRef(mediaId)
+        }
+    }
+
+    fun getFavouritesWithCast(mediaId: Int): Flow<FavouritesWithCast> {
+        return repository.getFavouritesWithCast(mediaId)
+    }
+
+    fun getFavouritesWithCrew(mediaId: Int): Flow<FavouritesWithCrew> {
+        return repository.getFavouritesWithCrew(mediaId)
     }
 }

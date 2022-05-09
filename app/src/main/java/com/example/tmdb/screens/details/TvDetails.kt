@@ -37,6 +37,7 @@ import coil.request.ImageRequest
 import com.example.tmdb.R
 import com.example.tmdb.data.local.CastLocal
 import com.example.tmdb.data.local.Favourite
+import com.example.tmdb.data.local.FavouritesWithCast
 import com.example.tmdb.navigation.RootScreen
 import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.remote.responses.ReviewResponse
@@ -51,6 +52,7 @@ import com.example.tmdb.utils.Constants
 import com.example.tmdb.utils.Resource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.flow.emptyFlow
 
 @ExperimentalPagerApi
 @Composable
@@ -79,21 +81,23 @@ fun TvDetailsScreen(
     val listFirstTab = listOf(
         stringResource(R.string.reviews), stringResource(R.string.discussions)
     )
-    val favoriteFilms = favouritesViewModel.getAFavorites(mediaId!!).collectAsState(
-        initial = Favourite(
-            mediaId = mediaId,
-            mediaType = "",
-            image = "",
-            rating = 0f,
-            favourite = false,
-            releaseDate = "",
-            title = "",
-            runTime = "",
-            genres = "",
-            overview = ""
+    val favoriteFilms = favouritesViewModel.getFavouritesWithCast(mediaId!!).collectAsState(
+        initial = FavouritesWithCast(
+            favourite = Favourite(
+                mediaId = mediaId,
+                mediaType = "",
+                image = "",
+                rating = 0f,
+                favourite = false,
+                releaseDate = "",
+                title = "",
+                runTime = "",
+                genres = "",
+                overview = ""
+            ),
+            castLocal = emptyList()
         )
     ).value
-
 
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -103,19 +107,23 @@ fun TvDetailsScreen(
 
             if (details is Resource.Error) {
                 ImageItem(
-                    mediaPosterUrl = favoriteFilms!!.image,
-                    mediaName = favoriteFilms.title,
-                    mediaReleaseDate = favoriteFilms.releaseDate,
-                    rating = favoriteFilms.rating,
-                    genres = favoriteFilms.genres.replace(oldChar = ',', newChar =' ' ),
-                    runTime = favoriteFilms.runTime,
+                    mediaPosterUrl = favoriteFilms!!.favourite.image,
+                    mediaName = favoriteFilms.favourite.title,
+                    mediaReleaseDate = favoriteFilms.favourite.releaseDate,
+                    rating = favoriteFilms.favourite.rating,
+                    genres = favoriteFilms.favourite.genres.replace(oldChar = ',', newChar = ' '),
+                    runTime = favoriteFilms.favourite.runTime,
                     viewModel = favouritesViewModel,
-                    mediaId = favoriteFilms.mediaId,
+                    mediaId = favoriteFilms.favourite.mediaId,
                     mediaType = "tv",
-                    overview = favoriteFilms.overview,
+                    overview = favoriteFilms.favourite.overview,
                     casts = casts
                 )
-                Overview(navController, casts = casts, overview = favoriteFilms.overview)
+                OverviewOffline(
+                    overview = favoriteFilms.favourite.overview,
+                    mediaId = favoriteFilms.favourite.mediaId
+                )
+                TopBilledCastSectionItemOffline(mediaId = favoriteFilms.favourite.mediaId)
             } else {
                 ImageItem(
                     mediaPosterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
@@ -132,29 +140,30 @@ fun TvDetailsScreen(
                     overview = details.data?.overview.toString(),
                     casts = casts
                 )
-                Overview(navController, casts = casts, overview = details.data?.overview.toString())
+                Overview(
+                    navController,
+                    casts = casts,
+                    overview = details.data?.overview.toString(),
+                    mediaId = mediaId
+                )
+                SectionText(stringResource(R.string.topBilledCast))
+                if (casts is Resource.Success) {
+                    TopBilledCastSectionItem(list = casts.data!!)
+                }
+                Spacer(Modifier.padding(35.dp))
+                SectionText(stringResource(R.string.social))
+                Tabs(pagerState = pagerState, listFirstTab)
+                if (review is Resource.Success) {
+                    TabsContentForSocial(pagerState = pagerState, listFirstTab.size, review.data!!)
+                }
+                SectionText(stringResource(R.string.recommendations))
+                if (recommendation is Resource.Success) {
+                    RowRecommendationsItem(recommendation.data!!, navController)
+                }
+                Spacer(Modifier.padding(35.dp))
             }
 
 
-
-
-            SectionText("Top Billed Cast")
-            if (casts is Resource.Success) {
-                TopBilledCastSectionItem(list = casts.data!!)
-            }else{
-                TopBilledCastSectionItemOffline()
-            }
-            Spacer(Modifier.padding(35.dp))
-            SectionText(stringResource(R.string.social))
-            Tabs(pagerState = pagerState, listFirstTab)
-            if (review is Resource.Success) {
-                TabsContentForSocial(pagerState = pagerState, listFirstTab.size, review.data!!)
-            }
-            SectionText(stringResource(R.string.recommendations))
-            if (recommendation is Resource.Success) {
-                RowRecommendationsItem(recommendation.data!!, navController)
-            }
-            Spacer(Modifier.padding(35.dp))
         }
     }
 }
