@@ -5,13 +5,13 @@ import androidx.room.PrimaryKey
 import com.example.tmdb.utils.Constants.CAST_TABLE
 
 @Entity(tableName = CAST_TABLE)
-data class CastLocal (
+data class CastLocal(
     val adult: Boolean,
     val castId: Int,
     val character: String,
     val creditId: String,
     val gender: Int,
-    @PrimaryKey  val id: Int,
+    @PrimaryKey val id: Int,
     val knownForDepartment: String,
     val name: String,
     val order: Int,

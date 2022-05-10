@@ -1,4 +1,4 @@
-package com.example.tmdb.screens
+package com.example.tmdb.screens.favourites
 
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,7 +29,6 @@ import coil.request.ImageRequest
 import com.example.tmdb.R
 import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.navigation.RootScreen
-import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.widgets.FavoriteButton
 import com.example.tmdb.screens.widgets.SectionText
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -57,11 +56,10 @@ fun FavouritesScreen(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalArrangement = Arrangement.SpaceEvenly,
             content = {
-                items(items = favoriteFilms.value,  key = { favoriteFilm: Favourite ->
+                items(items = favoriteFilms.value, key = { favoriteFilm: Favourite ->
                     favoriteFilm.mediaId
-                }){
-                    favourite ->
-                    GridItem(moviesData = favourite, navController ,viewModel)
+                }) { favourite ->
+                    GridItem(moviesData = favourite, navController, viewModel)
                 }
             }
         )
@@ -110,16 +108,20 @@ fun GridItem(
                     .fillMaxHeight()
                     .clip(shape = RoundedCornerShape(6.dp))
             )
-           // FavoriteButton(modifier = Modifier.padding(12.dp))
             FavoriteButton(
-                isLiked = viewModel.isAFavorite(moviesData.mediaId).collectAsState(false).value != null,
+                isLiked = viewModel.isAFavorite(moviesData.mediaId)
+                    .collectAsState(false).value != null,
                 onClick = { isFav ->
                     if (isFav) {
                         viewModel.deleteOneFavorite(moviesData.mediaId)
                         viewModel.deleteCast(moviesData.mediaId)
                         viewModel.deleteCrew(moviesData.mediaId)
                         viewModel.deleteFavouritesWithCastCrossRef(moviesData.mediaId)
-                        Toast.makeText(context, "Successfully deleted a favourite.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "Successfully deleted a favourite.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         return@FavoriteButton
                     }
                 }
@@ -139,6 +141,4 @@ fun GridItem(
             )
         }
     }
-
-
 }

@@ -25,20 +25,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.room.util.TableInfo
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
-import com.example.tmdb.data.local.CastLocal
 import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.data.local.FavouritesWithCast
 import com.example.tmdb.data.local.FavouritesWithCrew
 import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.utils.Constants
-import com.example.tmdb.utils.Resource
 import com.google.accompanist.pager.ExperimentalPagerApi
-import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun CastDetails(creditsResponse: CreditsResponse?) {

@@ -147,7 +147,11 @@ fun ImageItem(
                         viewModel.deleteCast(mediaId)
                         viewModel.deleteCrew(mediaId)
                         viewModel.deleteFavouritesWithCastCrossRef(mediaId)
-                        Toast.makeText(context, "Successfully deleted a favourite.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "Successfully deleted a favourite.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         return@FavoriteButton
                     } else {
                         viewModel.insertFavorite(
@@ -185,7 +189,7 @@ fun ImageItem(
                             viewModel.insertFavouritesWithCast(
                                 FavouritesWithCastCrossRef(
                                     id = it.id,
-                                   mediaId = mediaId
+                                    mediaId = mediaId
                                 )
                             )
                         }

@@ -1,4 +1,4 @@
-package com.example.tmdb.screens
+package com.example.tmdb.screens.home
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -39,10 +39,8 @@ import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.data.local.FavouritesWithCastCrossRef
 import com.example.tmdb.navigation.RootScreen
 import com.example.tmdb.remote.responses.CreditsResponse
-import com.example.tmdb.remote.responses.TvDetails
 import com.example.tmdb.screens.details.DetailsViewModel
 import com.example.tmdb.screens.favourites.FavouritesViewModel
-import com.example.tmdb.screens.home.HomeViewModel
 import com.example.tmdb.screens.widgets.FavoriteButton
 import com.example.tmdb.screens.widgets.SearchAppBar
 import com.example.tmdb.screens.widgets.SectionText
@@ -53,7 +51,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.flow.emptyFlow
 
 @ExperimentalPagerApi
 @Composable
@@ -371,7 +368,7 @@ fun RowItem(
                                         originalName = it.originalName,
                                         popularity = it.popularity,
                                         profilePath = it.profilePath,
-                                        movieIdForCrew =  getId?.get(posterUrl) as Int,
+                                        movieIdForCrew = getId?.get(posterUrl) as Int,
                                         department = it.department,
                                         job = it.job
                                     )
@@ -416,7 +413,7 @@ fun RowItem(
                                         originalName = it.originalName,
                                         popularity = it.popularity,
                                         profilePath = it.profilePath,
-                                        movieIdForCrew =  getId?.get(posterUrl) as Int,
+                                        movieIdForCrew = getId?.get(posterUrl) as Int,
                                         department = it.department,
                                         job = it.job
                                     )

@@ -1,4 +1,4 @@
-package com.example.tmdb.screens
+package com.example.tmdb.screens.details
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,7 +35,6 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
-import com.example.tmdb.data.local.CastLocal
 import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.data.local.FavouritesWithCast
 import com.example.tmdb.navigation.RootScreen
@@ -43,7 +42,6 @@ import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.remote.responses.ReviewResponse
 import com.example.tmdb.remote.responses.TvDetails
 import com.example.tmdb.remote.responses.TvResponse
-import com.example.tmdb.screens.details.DetailsViewModel
 import com.example.tmdb.screens.details.common.*
 import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.widgets.SectionText
@@ -52,7 +50,6 @@ import com.example.tmdb.utils.Constants
 import com.example.tmdb.utils.Resource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.flow.emptyFlow
 
 @ExperimentalPagerApi
 @Composable
@@ -162,8 +159,6 @@ fun TvDetailsScreen(
                 }
                 Spacer(Modifier.padding(35.dp))
             }
-
-
         }
     }
 }
@@ -269,4 +264,3 @@ private fun RowItemRecommendations(
         )
     }
 }
-

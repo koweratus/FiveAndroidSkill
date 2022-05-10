@@ -1,4 +1,4 @@
-package com.example.tmdb.screens
+package com.example.tmdb.screens.details
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,7 +42,6 @@ import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.remote.responses.MovieDetails
 import com.example.tmdb.remote.responses.MoviesResponse
 import com.example.tmdb.remote.responses.ReviewResponse
-import com.example.tmdb.screens.details.DetailsViewModel
 import com.example.tmdb.screens.details.common.*
 import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.widgets.SectionText

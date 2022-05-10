@@ -5,8 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.tmdb.navigation.BottomBarScreen
-import com.example.tmdb.screens.FavouritesScreen
-import com.example.tmdb.screens.HomeScreen
+import com.example.tmdb.screens.favourites.FavouritesScreen
+import com.example.tmdb.screens.home.HomeScreen
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 @OptIn(ExperimentalPagerApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)

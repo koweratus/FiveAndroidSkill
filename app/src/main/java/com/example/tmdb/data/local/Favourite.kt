@@ -16,4 +16,4 @@ data class Favourite(
     val genres: String,
     val runTime: String,
     val overview: String,
-    )
+)
