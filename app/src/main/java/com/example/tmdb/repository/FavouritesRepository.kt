@@ -1,57 +1,38 @@
 package com.example.tmdb.repository
 
 import com.example.tmdb.data.local.*
+import dagger.Provides
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class FavouritesRepository @Inject constructor(private val database: TmdbDatabase) {
 
-    suspend fun insertFavorite(favorite: Favourite) {
-        database.dao.insertFavourite(favorite)
-    }
+class FavouritesRepository @Inject constructor(private val dao: TmdbDao) {
 
-    suspend fun insertFavouritesWithCast(join: FavouritesWithCastCrossRef) {
-        database.dao.insertFavouritesWithCast(join)
-    }
+    suspend fun insertFavorite(favorite: Favourite) = dao.insertFavourite(favorite)
 
-    suspend fun insertCast(castLocal: CastLocal) {
-        database.dao.insertCast(castLocal)
-    }
+    suspend fun insertFavouritesWithCast(join: FavouritesWithCastCrossRef) =
+        dao.insertFavouritesWithCast(join)
 
-    suspend fun insertCrew(crewLocal: CrewLocal) {
-        database.dao.insertCrew(crewLocal)
-    }
+    suspend fun insertCast(castLocal: CastLocal) = dao.insertCast(castLocal)
 
-    fun getFavorites(): Flow<List<Favourite>> {
-        return database.dao.getAllFavourites()
-    }
+    suspend fun insertCrew(crewLocal: CrewLocal) = dao.insertCrew(crewLocal)
 
-     fun isFavorite(mediaId: Int): Flow<Boolean> {
-        return database.dao.isFavourite(mediaId)
-    }
+    fun getFavorites(): Flow<List<Favourite>> = dao.getAllFavourites()
 
+    fun isFavorite(mediaId: Int): Flow<Boolean> = dao.isFavourite(mediaId)
 
-    suspend fun deleteOneFavorite(mediaId: Int) {
-        database.dao.deleteFavourite(mediaId)
-    }
+    suspend fun deleteOneFavorite(mediaId: Int) = dao.deleteFavourite(mediaId)
 
-    suspend fun deleteCast(mediaId: Int) {
-        database.dao.deleteCast(mediaId)
-    }
+    suspend fun deleteCast(mediaId: Int) = dao.deleteCast(mediaId)
 
-    suspend fun deleteCrew(mediaId: Int) {
-        database.dao.deleteCrew(mediaId)
-    }
+    suspend fun deleteCrew(mediaId: Int) = dao.deleteCrew(mediaId)
 
-    suspend fun deleteFavouritesWithCastCrossRef(mediaId: Int) {
-        database.dao.deleteFavouritesWithCastCrossRef(mediaId)
-    }
+    suspend fun deleteFavouritesWithCastCrossRef(mediaId: Int) =
+        dao.deleteFavouritesWithCastCrossRef(mediaId)
 
-    fun getFavouritesWithCast(mediaId: Int): Flow<FavouritesWithCast> {
-        return database.dao.getFavouritesWithCast(mediaId)
-    }
+    fun getFavouritesWithCast(mediaId: Int): Flow<FavouritesWithCast> =
+        dao.getFavouritesWithCast(mediaId)
 
-    fun getFavouritesWithCrew(mediaId: Int): Flow<FavouritesWithCrew> {
-        return database.dao.getFavouritesWithCrew(mediaId)
-    }
+    fun getFavouritesWithCrew(mediaId: Int): Flow<FavouritesWithCrew> =
+        dao.getFavouritesWithCrew(mediaId)
 }

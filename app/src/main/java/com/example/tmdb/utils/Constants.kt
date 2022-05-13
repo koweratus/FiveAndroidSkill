@@ -8,4 +8,5 @@ object Constants {
     const val TABLE_NAME = "tmdb_table"
     const val CAST_TABLE = "cast_table"
     const val CREW_TABLE = "crew_table"
+    const val FAVOURITESWITHCAST_TABLE = "FavouritesWithCastCrossRef"
 }

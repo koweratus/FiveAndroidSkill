@@ -20,8 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -42,16 +42,21 @@ fun FavouritesScreen(navController: NavController) {
     val viewModel: FavouritesViewModel = hiltViewModel()
     val favoriteFilms = viewModel.favourites.collectAsState(initial = emptyList())
 
-    Column(Modifier.padding(top = 50.dp, bottom = 40.dp)) {
+    Column(
+        Modifier.padding(
+            top = dimensionResource(id = R.dimen.padding_50),
+            bottom = dimensionResource(id = R.dimen.padding_40)
+        )
+    ) {
         SectionText(stringResource(R.string.favs))
         LazyVerticalGrid(
-            cells = GridCells.Adaptive(105.dp),
+            cells = GridCells.Adaptive(dimensionResource(id = R.dimen.grid_cells)),
             // content padding
             contentPadding = PaddingValues(
-                start = 12.dp,
-                top = 66.dp,
-                end = 12.dp,
-                bottom = 16.dp
+                start = dimensionResource(id = R.dimen.padding_12),
+                top = dimensionResource(id = R.dimen.padding_66),
+                end = dimensionResource(id = R.dimen.padding_12),
+                bottom = dimensionResource(id = R.dimen.small_padding)
             ),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalArrangement = Arrangement.SpaceEvenly,
@@ -78,20 +83,20 @@ fun GridItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
-            .padding(4.dp)
+            .height(dimensionResource(id = R.dimen.height_180))
+            .padding(dimensionResource(id = R.dimen.padding_4))
             .clickable {
                 if (moviesData.mediaType == "tv") {
-                    navController.navigate(RootScreen.TvDetails.route + "/${moviesData.mediaId}")
+                    navController.navigate("${RootScreen.TvDetails.route}/${moviesData.mediaId}")
                 } else if (moviesData.mediaType == "movie") {
-                    navController.navigate(RootScreen.MovieDetails.route + "/${moviesData.mediaId}")
+                    navController.navigate("${RootScreen.MovieDetails.route}/${moviesData.mediaId}")
                 }
 
             },
-        shape = RoundedCornerShape(15.dp),
-        elevation = 12.dp
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shaped_corners_big)),
+        elevation = dimensionResource(id = R.dimen.elevation_12)
     ) {
-        Box(modifier = Modifier.height(200.dp)) {
+        Box(modifier = Modifier.height(dimensionResource(id = R.dimen.height_medium))) {
             Image(
                 painter = rememberAsyncImagePainter(
                     model = ImageRequest.Builder(context = LocalContext.current)
@@ -106,7 +111,7 @@ fun GridItem(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxHeight()
-                    .clip(shape = RoundedCornerShape(6.dp))
+                    .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.shaped_corners)))
             )
             FavoriteButton(
                 isLiked = viewModel.isAFavorite(moviesData.mediaId)

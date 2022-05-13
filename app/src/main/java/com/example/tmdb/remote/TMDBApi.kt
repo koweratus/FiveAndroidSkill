@@ -144,5 +144,4 @@ interface TMDBApi {
         @Query("query") query: String,
         @Query("api_key") apiKey: String = API_KEY
     ): MultiSearchResponse
-
 }

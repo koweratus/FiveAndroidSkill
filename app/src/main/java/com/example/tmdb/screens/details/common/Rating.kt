@@ -12,20 +12,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tmdb.R
 
 @Composable
 fun CircularProgressionBar(
     percentage: Float,
     number: Int = 10,
     fontSize: TextUnit = 9.sp,
-    radius: Dp = 40.dp,
+    radius: Dp = dimensionResource(id = R.dimen.radius),
     color: Color = Color.Green,
-    strokeWidth: Dp = 3.dp,
+    strokeWidth: Dp = dimensionResource(id = R.dimen.stroke_width),
     animDuration: Int = 1000,
     animDelay: Int = 0
 ) {
@@ -64,5 +65,4 @@ fun CircularProgressionBar(
             fontWeight = FontWeight.Bold
         )
     }
-
 }

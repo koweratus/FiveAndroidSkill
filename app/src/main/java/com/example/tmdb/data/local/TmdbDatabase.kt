@@ -5,5 +5,5 @@ import androidx.room.RoomDatabase
 
 @Database(entities = arrayOf(Favourite::class, CastLocal::class, CrewLocal::class, FavouritesWithCastCrossRef::class), version = 6)
 abstract class TmdbDatabase : RoomDatabase() {
-    abstract val dao: TmdbDao
+    abstract fun getTmdbDao (): TmdbDao
 }

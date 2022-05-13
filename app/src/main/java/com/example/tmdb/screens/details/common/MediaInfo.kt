@@ -9,10 +9,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.tmdb.R
@@ -31,7 +31,7 @@ fun Overview(
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.height(300.dp)
+        modifier = Modifier.height(dimensionResource(id = R.dimen.height_xl))
     ) {
 
         item {
@@ -43,7 +43,10 @@ fun Overview(
                 fontFamily = FontFamily(Font(R.font.proximanova_regular)),
                 fontSize = 14.sp,
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 10.dp)
+                    .padding(
+                        start = dimensionResource(id = R.dimen.small_padding),
+                        top = dimensionResource(id = R.dimen.small_medium_padding)
+                    )
                     .fillMaxWidth(.8f),
                 softWrap = true
             )
@@ -67,7 +70,7 @@ fun OverviewOffline(
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.height(300.dp)
+        modifier = Modifier.height(dimensionResource(id = R.dimen.height_xl))
     ) {
 
         item {
@@ -79,7 +82,10 @@ fun OverviewOffline(
                 fontFamily = FontFamily(Font(R.font.proximanova_regular)),
                 fontSize = 14.sp,
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 10.dp)
+                    .padding(
+                        start = dimensionResource(id = R.dimen.small_padding),
+                        top = dimensionResource(id = R.dimen.small_medium_padding)
+                    )
                     .fillMaxWidth(.8f),
                 softWrap = true
             )
@@ -90,4 +96,3 @@ fun OverviewOffline(
 
     }
 }
-

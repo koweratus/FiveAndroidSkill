@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="spacer_value">35dp</dimen>
+    <dimen name="padding_40">40dp</dimen>
+    <dimen name="padding_50">50dp</dimen>
+    <dimen name="small_padding">16dp</dimen>
+    <dimen name="xsmall_padding">5dp</dimen>
+    <dimen name="shaped_corners">6dp</dimen>
+    <dimen name="shaped_corners_big">15dp</dimen>
+    <dimen name="height_medium">100dp</dimen>
+    <dimen name="width_medium">100dp</dimen>
+    <dimen name="height_l">200dp</dimen>
+    <dimen name="width_220">220dp</dimen>
+    <dimen name="width_140">140dp</dimen>
+    <dimen name="height_140">140dp</dimen>
+    <dimen name="height_xxl">400dp</dimen>
+    <dimen name="height_xl">300dp</dimen>
+    <dimen name="height_220">220dp</dimen>
+    <dimen name="medium_padding">20dp</dimen>
+    <dimen name="small_medium_padding">10dp</dimen>
+    <dimen name="big_padding">25dp</dimen>
+    <dimen name="stroke_width">3dp</dimen>
+    <dimen name="radius">40dp</dimen>
+    <dimen name="grid_cells">105dp</dimen>
+    <dimen name="elevation_12">12dp</dimen>
+    <dimen name="padding_4">4dp</dimen>
+    <dimen name="height_180">180dp</dimen>
+    <dimen name="padding_12">12dp</dimen>
+    <dimen name="padding_66">66dp</dimen>
+    <dimen name="padding_208">208dp</dimen>
+    <dimen name="padding_190">190dp</dimen>
+    <dimen name="padding_160">160dp</dimen>
+    <dimen name="padding_56">56dp</dimen>
+    <dimen name="padding_3">3dp</dimen>
+    <dimen name="padding_0">0dp</dimen>
+</resources>

@@ -28,8 +28,4 @@ data class Crew(
     val department: String,
     @SerializedName("profile_path")
     val profilePath: String? = "https://pixy.org/src/9/94083.png"
-
-
-
-
 ) : Parcelable

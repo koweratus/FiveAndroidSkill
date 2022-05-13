@@ -24,11 +24,11 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -147,7 +147,7 @@ fun TvDetailsScreen(
                 if (casts is Resource.Success) {
                     TopBilledCastSectionItem(list = casts.data!!)
                 }
-                Spacer(Modifier.padding(35.dp))
+                Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
                 SectionText(stringResource(R.string.social))
                 Tabs(pagerState = pagerState, listFirstTab)
                 if (review is Resource.Success) {
@@ -157,7 +157,7 @@ fun TvDetailsScreen(
                 if (recommendation is Resource.Success) {
                     RowRecommendationsItem(recommendation.data!!, navController)
                 }
-                Spacer(Modifier.padding(35.dp))
+                Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
             }
         }
     }
@@ -172,7 +172,7 @@ private fun RowRecommendationsItem(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 20.dp)
+            .padding(top = dimensionResource(id = R.dimen.medium_padding))
     ) {
         LazyRow(
             state = rememberLazyListState(),
@@ -180,7 +180,10 @@ private fun RowRecommendationsItem(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(top = 5.dp, start = 16.dp)
+                .padding(
+                    top = dimensionResource(id = R.dimen.xsmall_padding),
+                    start = dimensionResource(id = R.dimen.small_padding)
+                )
         ) {
             items(
                 items = list.results
@@ -208,19 +211,22 @@ private fun RowItemRecommendations(
     ) {
         Card(
             modifier = Modifier
-                .size(width = 220.dp, height = 100.dp)
-                .padding(horizontal = 5.dp)
+                .size(
+                    width = dimensionResource(id = R.dimen.width_220),
+                    height = dimensionResource(id = R.dimen.height_medium)
+                )
+                .padding(horizontal = dimensionResource(id = R.dimen.xsmall_padding))
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(bounded = true, color = Color.Black),
                     onClick = {
-                        navController.navigate(RootScreen.TvDetails.route + "/${id}")
+                        navController.navigate("${RootScreen.TvDetails.route}/$id")
                     }
                 ),
-            shape = RoundedCornerShape(15.dp),
-            elevation = 5.dp
+            shape = RoundedCornerShape(dimensionResource(id = R.dimen.shaped_corners_big)),
+            elevation = dimensionResource(id = R.dimen.xsmall_padding)
         ) {
-            Box(modifier = Modifier.height(200.dp)) {
+            Box(modifier = Modifier.height(dimensionResource(id = R.dimen.height_l))) {
                 Image(
                     painter = rememberAsyncImagePainter(
                         model = ImageRequest.Builder(context = LocalContext.current)
@@ -235,7 +241,7 @@ private fun RowItemRecommendations(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxHeight()
-                        .clip(shape = RoundedCornerShape(6.dp))
+                        .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.shaped_corners)))
                 )
                 Box(
                     modifier = Modifier
@@ -260,7 +266,11 @@ private fun RowItemRecommendations(
             fontFamily = FontFamily(Font(R.font.proximanova_bold)),
             fontSize = 16.sp,
             modifier = Modifier
-                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
+                .padding(
+                    start = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding),
+                    bottom = dimensionResource(id = R.dimen.small_padding)
+                )
         )
     }
 }

@@ -6,11 +6,11 @@ import com.example.tmdb.utils.Constants.CREW_TABLE
 
 @Entity(tableName = CREW_TABLE)
 data class CrewLocal(
+    @PrimaryKey val id: Int,
     val adult: Boolean,
     val job: String,
     val creditId: String,
     val gender: Int,
-    @PrimaryKey val id: Int,
     val knownForDepartment: String,
     val department: String,
     val name: String,

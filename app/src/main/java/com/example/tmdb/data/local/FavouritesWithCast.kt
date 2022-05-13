@@ -13,5 +13,4 @@ data class FavouritesWithCast(
         associateBy = Junction(FavouritesWithCastCrossRef::class)
     )
     val castLocal: List<CastLocal>
-
 )

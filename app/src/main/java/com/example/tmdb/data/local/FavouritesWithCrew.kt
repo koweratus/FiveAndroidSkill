@@ -11,5 +11,4 @@ data class FavouritesWithCrew(
         entityColumn = "movieIdForCrew"
     )
     val crewLocal: List<CrewLocal>
-
 )

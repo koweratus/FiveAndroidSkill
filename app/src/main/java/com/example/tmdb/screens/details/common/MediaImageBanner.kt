@@ -17,11 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -59,10 +59,10 @@ fun ImageItem(
                 indication = rememberRipple(bounded = true, color = Color.Black),
                 onClick = { }
             )
-            .height(300.dp),
-        elevation = 5.dp
+            .height( dimensionResource(id = R.dimen.height_l)),
+        elevation =  dimensionResource(id = R.dimen.xsmall_padding)
     ) {
-        Box(modifier = Modifier.height(10.dp)) {
+        Box(modifier = Modifier.height( dimensionResource(id = R.dimen.small_medium_padding))) {
             Image(
                 painter = rememberAsyncImagePainter(
                     model = ImageRequest.Builder(context = LocalContext.current)
@@ -93,7 +93,7 @@ fun ImageItem(
                         )
                     )
             )
-            Row(modifier = Modifier.padding(start = 16.dp, top = 105.dp)) {
+            Row(modifier = Modifier.padding(start =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.grid_cells))) {
                 rating?.let { CircularProgressionBar(percentage = it) }
                 Text(
                     text = stringResource(R.string.user_score),
@@ -102,7 +102,7 @@ fun ImageItem(
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(top = 10.dp, start = 16.dp)
+                        .padding(top =  dimensionResource(id = R.dimen.small_medium_padding), start =  dimensionResource(id = R.dimen.small_padding))
                 )
             }
             Text(
@@ -112,7 +112,7 @@ fun ImageItem(
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(top = 160.dp, start = 10.dp)
+                    .padding(top =  dimensionResource(id = R.dimen.padding_160), start =  dimensionResource(id = R.dimen.small_medium_padding))
             )
             Text(
                 text = mediaReleaseDate,
@@ -121,7 +121,7 @@ fun ImageItem(
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(top = 190.dp, start = 10.dp)
+                    .padding(top = dimensionResource(id = R.dimen.padding_190), start =  dimensionResource(id = R.dimen.small_medium_padding))
             )
             Text(
                 color = Color.White,
@@ -129,7 +129,7 @@ fun ImageItem(
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(top = 208.dp, start = 10.dp),
+                    .padding(top = dimensionResource(id = R.dimen.padding_208), start =  dimensionResource(id = R.dimen.small_medium_padding)),
                 text = genres + stringResource(R.string.runtime, runTime)
             )
             /*Icon(
@@ -218,5 +218,4 @@ fun ImageItem(
         }
 
     }
-
 }

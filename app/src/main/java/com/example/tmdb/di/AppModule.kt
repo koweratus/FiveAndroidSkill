@@ -57,14 +57,18 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
+    @Singleton // Tell Dagger-Hilt to create a singleton accessible everywhere in ApplicationCompenent (i.e. everywhere in the application)
     fun provideTmdbDatabase(application: Application): TmdbDatabase {
         return Room.databaseBuilder(
             application.applicationContext,
             TmdbDatabase::class.java,
             DATABASE_NAME
-        ).fallbackToDestructiveMigration().build()
+        ).fallbackToDestructiveMigration().build() // The reason we can construct a database for the repo
     }
+
+    @Singleton
+    @Provides
+    fun provideTmdbDao(db: TmdbDatabase) = db.getTmdbDao() // The reason we can implement a Dao for the database
 
     @Provides
     @Singleton
@@ -73,5 +77,4 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTvSeriesRepository(api: TMDBApi) = TvRepository(api)
-
 }
