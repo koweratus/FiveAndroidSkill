@@ -202,7 +202,7 @@ private fun RowRecommendationsItem(
 @Composable
 private fun RowItemRecommendations(
     moviePoster: String,
-    movieName: String,
+    movieName: String?,
     id: Int,
     navController: NavController
 ) {
@@ -259,18 +259,20 @@ private fun RowItemRecommendations(
             }
         }
 
-        Text(
-            text = movieName,
-            color = colorResource(R.color.purple_700),
-            textAlign = TextAlign.Start,
-            fontFamily = FontFamily(Font(R.font.proximanova_bold)),
-            fontSize = 16.sp,
-            modifier = Modifier
-                .padding(
-                    start = dimensionResource(id = R.dimen.small_padding),
-                    top = dimensionResource(id = R.dimen.small_padding),
-                    bottom = dimensionResource(id = R.dimen.small_padding)
-                )
-        )
+        movieName?.let {
+            Text(
+                text = it,
+                color = colorResource(R.color.purple_700),
+                textAlign = TextAlign.Start,
+                fontFamily = FontFamily(Font(R.font.proximanova_bold)),
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .padding(
+                        start = dimensionResource(id = R.dimen.small_padding),
+                        top = dimensionResource(id = R.dimen.small_padding),
+                        bottom = dimensionResource(id = R.dimen.small_padding)
+                    )
+            )
+        }
     }
 }

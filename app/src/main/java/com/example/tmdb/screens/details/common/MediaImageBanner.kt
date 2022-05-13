@@ -59,7 +59,7 @@ fun ImageItem(
                 indication = rememberRipple(bounded = true, color = Color.Black),
                 onClick = { }
             )
-            .height( dimensionResource(id = R.dimen.height_l)),
+            .height( dimensionResource(id = R.dimen.height_xl)),
         elevation =  dimensionResource(id = R.dimen.xsmall_padding)
     ) {
         Box(modifier = Modifier.height( dimensionResource(id = R.dimen.small_medium_padding))) {

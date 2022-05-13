@@ -180,7 +180,10 @@ fun RowRecommendationsItem(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(top = dimensionResource(id = R.dimen.xsmall_padding), start = dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    top = dimensionResource(id = R.dimen.xsmall_padding),
+                    start = dimensionResource(id = R.dimen.small_padding)
+                )
         ) {
             items(
                 items = list.searches
@@ -208,7 +211,10 @@ private fun RowItemRecommendations(
     ) {
         Card(
             modifier = Modifier
-                .size(width = dimensionResource(id = R.dimen.width_220), height = dimensionResource(id = R.dimen.height_medium))
+                .size(
+                    width = dimensionResource(id = R.dimen.width_220),
+                    height = dimensionResource(id = R.dimen.height_medium)
+                )
                 .padding(horizontal = dimensionResource(id = R.dimen.xsmall_padding))
                 .clickable(
                     interactionSource = MutableInteractionSource(),
@@ -260,7 +266,11 @@ private fun RowItemRecommendations(
             fontFamily = FontFamily(Font(R.font.proximanova_bold)),
             fontSize = 16.sp,
             modifier = Modifier
-                .padding(start = dimensionResource(id = R.dimen.small_padding), top = dimensionResource(id = R.dimen.small_padding), bottom = dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding),
+                    bottom = dimensionResource(id = R.dimen.small_padding)
+                )
         )
     }
 }
