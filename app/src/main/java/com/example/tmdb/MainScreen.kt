@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -121,11 +121,9 @@ fun TopBar(navController: NavController) {
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .align(alignment = Alignment.Center)
-                .height(50.dp)
+                .height(dimensionResource(id = R.dimen.padding_50))
                 .fillMaxWidth(.6f)
         )
 
     }
-
-
 }

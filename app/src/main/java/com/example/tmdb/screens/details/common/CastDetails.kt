@@ -12,6 +12,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,45 +20,46 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
+import com.example.tmdb.data.local.Favourite
+import com.example.tmdb.data.local.FavouritesWithCast
+import com.example.tmdb.data.local.FavouritesWithCrew
 import com.example.tmdb.remote.responses.CreditsResponse
+import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.utils.Constants
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 @Composable
 fun CastDetails(creditsResponse: CreditsResponse?) {
-    var castName: String? = null
-    creditsResponse?.cast?.forEach {
-        castName = it.name
-    }.toString()
 
-    println(castName)
     Column {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .padding(start = dimensionResource(id = R.dimen.small_padding), end = dimensionResource(id = R.dimen.small_padding), top = dimensionResource(id = R.dimen.small_padding))
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in creditsResponse?.cast!!.take(3)) {
+            for (i in creditsResponse?.crew!!.take(3)) {
                 CastInfo(castName = i.name, R.font.proximanova_bold)
+
             }
         }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .padding(start = dimensionResource(id = R.dimen.small_padding), end = dimensionResource(id = R.dimen.small_padding), top = dimensionResource(id = R.dimen.small_padding))
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in creditsResponse?.cast!!.take(3)) {
+            for (i in creditsResponse?.crew!!.take(3)) {
                 CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
             }
         }
@@ -65,10 +67,10 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .padding(start = dimensionResource(id = R.dimen.small_padding), end = dimensionResource(id = R.dimen.small_padding), top = dimensionResource(id = R.dimen.small_padding))
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in creditsResponse?.cast!!.takeLast(3)) {
+            for (i in creditsResponse?.crew!!.takeLast(3)) {
                 CastInfo(castName = i.name, R.font.proximanova_bold)
             }
         }
@@ -76,10 +78,10 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .padding(start = dimensionResource(id = R.dimen.small_padding), end = dimensionResource(id = R.dimen.small_padding), top = dimensionResource(id = R.dimen.small_padding))
                 .align(Alignment.CenterHorizontally)
         ) {
-            for (i in creditsResponse?.cast!!.takeLast(3)) {
+            for (i in creditsResponse?.crew!!.takeLast(3)) {
                 CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
             }
         }
@@ -105,16 +107,16 @@ fun TopBilledCastItem(
 
     Card(
         modifier = Modifier
-            .size(width = 140.dp, height = 220.dp)
-            .padding(horizontal = 5.dp)
+            .size(width =dimensionResource(id = R.dimen.width_140), height =dimensionResource(id = R.dimen.height_220))
+            .padding(horizontal = dimensionResource(id = R.dimen.xsmall_padding))
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = rememberRipple(bounded = true, color = Color.Black),
                 onClick = { //navController.navigate(BottomBarScreen.Details.route)
                 }
             ),
-        shape = RoundedCornerShape(6.dp),
-        elevation = 15.dp,
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shaped_corners)),
+        elevation = dimensionResource(id = R.dimen.shaped_corners_big),
         backgroundColor = Color.White
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -131,14 +133,14 @@ fun TopBilledCastItem(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
-                    .clip(shape = RoundedCornerShape(6.dp)),
+                    .height(dimensionResource(id = R.dimen.height_140))
+                    .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.shaped_corners))),
                 contentScale = ContentScale.Crop,
 
                 )
             Text(
                 modifier = Modifier
-                    .padding(top = 6.dp, start = 6.dp, end = 6.dp),
+                    .padding(top = dimensionResource(id = R.dimen.xsmall_padding), start = dimensionResource(id = R.dimen.xsmall_padding), end = dimensionResource(id = R.dimen.xsmall_padding)),
                 text = castName,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
@@ -146,7 +148,7 @@ fun TopBilledCastItem(
             )
             Text(
                 modifier = Modifier
-                    .padding(top = 6.dp, start = 6.dp, end = 6.dp),
+                    .padding(top = dimensionResource(id = R.dimen.xsmall_padding), start = dimensionResource(id = R.dimen.xsmall_padding), end = dimensionResource(id = R.dimen.xsmall_padding)),
                 text = castKnownFor,
                 fontSize = 12.sp,
                 fontFamily = FontFamily(Font(R.font.proximanova_regular)),
@@ -167,7 +169,7 @@ fun TopBilledCastSectionItem(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 20.dp)
+            .padding(top =  dimensionResource(id = R.dimen.medium_padding))
     ) {
         LazyRow(
             state = rememberLazyListState(),
@@ -175,7 +177,7 @@ fun TopBilledCastSectionItem(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(top = 5.dp, start = 16.dp, end = 16.dp)
+                .padding(top =  dimensionResource(id = R.dimen.xsmall_padding), start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding))
         ) {
             items(
                 list?.cast!!
@@ -185,6 +187,125 @@ fun TopBilledCastSectionItem(
                     castKnownFor = item.knownForDepartment,
                     castPhoto = "${Constants.IMAGE_BASE_UR}/${item.profilePath}"
                 )
+            }
+        }
+    }
+}
+
+@ExperimentalPagerApi
+@Composable
+fun TopBilledCastSectionItemOffline(mediaId: Int) {
+    val favouritesViewModel: FavouritesViewModel = hiltViewModel()
+    val castLocal = favouritesViewModel.getFavouritesWithCast(mediaId).collectAsState(
+        initial = FavouritesWithCast(
+            castLocal = emptyList(),
+            favourite = Favourite(
+                mediaId = mediaId,
+                mediaType = "",
+                image = "",
+                rating = 0f,
+                favourite = false,
+                releaseDate = "",
+                title = "",
+                runTime = "",
+                genres = "",
+                overview = ""
+            )
+        )
+    ).value
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(top =  dimensionResource(id = R.dimen.medium_padding))
+    ) {
+        LazyRow(
+            state = rememberLazyListState(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(top =  dimensionResource(id = R.dimen.xsmall_padding), start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding))
+        ) {
+            items(
+                items = castLocal.castLocal
+            ) { item ->
+                TopBilledCastItem(
+                    castName = item.name,
+                    castKnownFor = item.knownForDepartment,
+                    castPhoto = "${Constants.IMAGE_BASE_UR}/${item.profilePath}"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CastDetailsOffline(mediaId: Int) {
+
+    val favouritesViewModel: FavouritesViewModel = hiltViewModel()
+    val crewLocal = favouritesViewModel.getFavouritesWithCrew(mediaId).collectAsState(
+        initial = FavouritesWithCrew(
+            crewLocal = emptyList(),
+            favourite = Favourite(
+                mediaId = mediaId,
+                mediaType = "",
+                image = "",
+                rating = 0f,
+                favourite = false,
+                releaseDate = "",
+                title = "",
+                runTime = "",
+                genres = "",
+                overview = ""
+            )
+        )
+    ).value
+
+    Column {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.small_padding))
+                .align(Alignment.CenterHorizontally)
+        ) {
+            for (i in crewLocal.crewLocal.take(3)) {
+                CastInfo(castName = i.name, R.font.proximanova_bold)
+            }
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start =  dimensionResource(id = R.dimen.xsmall_padding), end =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.small_padding))
+                .align(Alignment.CenterHorizontally)
+        ) {
+            for (i in crewLocal.crewLocal.take(3)) {
+                CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
+            }
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.small_padding))
+                .align(Alignment.CenterHorizontally)
+        ) {
+            for (i in crewLocal.crewLocal.takeLast(3)) {
+                CastInfo(castName = i.name, R.font.proximanova_bold)
+            }
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.small_padding))
+                .align(Alignment.CenterHorizontally)
+        ) {
+            for (i in crewLocal.crewLocal.takeLast(3)) {
+                CastInfo(castName = i.knownForDepartment, R.font.proximanova_regular)
             }
         }
     }

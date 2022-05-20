@@ -12,19 +12,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tmdb.R
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -43,26 +44,24 @@ fun SectionText(text: String) {
         fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
         fontSize = 24.sp,
         modifier = Modifier
-            .padding(start = 16.dp)
+            .padding(start = dimensionResource(id = R.dimen.small_padding))
     )
 }
 
 @Composable
 fun FavoriteButton(
     modifier: Modifier = Modifier,
-    color: Color = Color.White
+    isLiked: Boolean,
+    onClick: (isFav: Boolean) -> Unit = {}
 ) {
-    var isFavorite by remember { mutableStateOf(false) }
 
-    IconToggleButton(
-        checked = isFavorite,
-        onCheckedChange = {
-            isFavorite = !isFavorite
-        }
-    ) {
+    IconButton(
+        onClick = {
+            onClick(isLiked)
+        }) {
         Icon(
-            tint = color,
-            imageVector = if (isFavorite) {
+            tint = Color.White,
+            imageVector = if (isLiked) {
                 Icons.Filled.Favorite
 
             } else {
@@ -72,7 +71,6 @@ fun FavoriteButton(
         )
     }
 }
-
 
 @Composable
 fun SearchAppBar(
@@ -84,9 +82,12 @@ fun SearchAppBar(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .padding(start = 16.dp, end = 16.dp)
-            .clip(shape = RoundedCornerShape(6.dp)),
+            .height(dimensionResource(id = R.dimen.padding_56))
+            .padding(
+                start = dimensionResource(id = R.dimen.small_padding),
+                end = dimensionResource(id = R.dimen.small_padding)
+            )
+            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.shaped_corners))),
 
         elevation = AppBarDefaults.TopAppBarElevation,
         color = Color.LightGray
@@ -151,7 +152,7 @@ fun Tabs(pagerState: PagerState, list: List<String>) {
         contentColor = Color.White,
         divider = {
             TabRowDefaults.Divider(
-                thickness = 3.dp,
+                thickness = dimensionResource(id = R.dimen.padding_3),
                 color = Color.White
             )
         },
@@ -160,12 +161,12 @@ fun Tabs(pagerState: PagerState, list: List<String>) {
                 Modifier
                     .pagerTabIndicatorOffset(pagerState, tabPositions)
                     .wrapContentWidth(),
-                height = 3.dp,
+                height = dimensionResource(id = R.dimen.padding_3),
                 color = colorResource(R.color.purple_700)
             )
         },
-        edgePadding = 0.dp,
-        modifier = Modifier.padding(start = 10.dp)
+        edgePadding = dimensionResource(id = R.dimen.padding_0),
+        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.small_medium_padding))
     ) {
         list.forEachIndexed { index, _ ->
             Tab(
@@ -201,7 +202,5 @@ fun getAbbreviatedFromDateTime(dateTime: String, dateFormat: String, field: Stri
     } catch (e: ParseException) {
         e.printStackTrace()
     }
-
     return null
 }
-

@@ -103,5 +103,4 @@ class MovieDetailsRepository @Inject constructor(private val api: TMDBApi) {
         Timber.d("Movie Casts $response")
         return Resource.Success(response)
     }
-
 }

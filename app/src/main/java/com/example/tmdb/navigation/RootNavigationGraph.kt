@@ -8,8 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.tmdb.navigation.RootScreen
-import com.example.tmdb.screens.MovieDetailsScreen
-import com.example.tmdb.screens.TvDetailsScreen
+import com.example.tmdb.screens.details.MovieDetailsScreen
+import com.example.tmdb.screens.details.TvDetailsScreen
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 
@@ -18,6 +18,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 fun RootNavigationGraph(
     rootNavHostController: NavHostController
 ) {
+
     NavHost(rootNavHostController, startDestination = RootScreen.Main.route) {
         composable(RootScreen.Main.route) {
             MainScren(rootNavHostController)
