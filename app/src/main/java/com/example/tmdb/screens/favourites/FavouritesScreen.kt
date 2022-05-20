@@ -51,7 +51,6 @@ fun FavouritesScreen(navController: NavController) {
         SectionText(stringResource(R.string.favs))
         LazyVerticalGrid(
             cells = GridCells.Adaptive(dimensionResource(id = R.dimen.grid_cells)),
-            // content padding
             contentPadding = PaddingValues(
                 start = dimensionResource(id = R.dimen.padding_12),
                 top = dimensionResource(id = R.dimen.padding_66),
