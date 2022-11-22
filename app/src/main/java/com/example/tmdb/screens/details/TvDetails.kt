@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
+import com.example.tmdb.TopBar
 import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.data.local.FavouritesWithCast
 import com.example.tmdb.navigation.RootScreen
@@ -58,106 +60,117 @@ fun TvDetailsScreen(
     mediaId: Int?,
     favouritesViewModel: FavouritesViewModel = hiltViewModel()
 ) {
-    val viewModel: DetailsViewModel = hiltViewModel()
-
-    val details = produceState<Resource<TvDetails>>(initialValue = Resource.Loading()) {
-        value = viewModel.getTvDetails(mediaId)
-    }.value
-    val casts = produceState<Resource<CreditsResponse>>(initialValue = Resource.Loading()) {
-        value = viewModel.getTvCasts(mediaId!!)
-    }.value
-
-    val review = produceState<Resource<ReviewResponse>>(initialValue = Resource.Loading()) {
-        value = viewModel.getTvReviews(mediaId!!)
-    }.value
-    val recommendation = produceState<Resource<TvResponse>>(initialValue = Resource.Loading()) {
-        value = viewModel.getTvRecommendations(mediaId!!)
-    }.value
-
-    val pagerState = rememberPagerState(initialPage = 0)
-    val listFirstTab = listOf(
-        stringResource(R.string.reviews), stringResource(R.string.discussions)
-    )
-    val favoriteFilms = favouritesViewModel.getFavouritesWithCast(mediaId!!).collectAsState(
-        initial = FavouritesWithCast(
-            favourite = Favourite(
-                mediaId = mediaId,
-                mediaType = "",
-                image = "",
-                rating = 0f,
-                favourite = false,
-                releaseDate = "",
-                title = "",
-                runTime = "",
-                genres = "",
-                overview = ""
-            ),
-            castLocal = emptyList()
-        )
-    ).value
-
-    LazyColumn(
-        verticalArrangement = Arrangement.SpaceEvenly,
+    Scaffold(
+        topBar = { TopBar(navController = navController) }
     ) {
+        val viewModel: DetailsViewModel = hiltViewModel()
 
-        item {
+        val details = produceState<Resource<TvDetails>>(initialValue = Resource.Loading()) {
+            value = viewModel.getTvDetails(mediaId)
+        }.value
+        val casts = produceState<Resource<CreditsResponse>>(initialValue = Resource.Loading()) {
+            value = viewModel.getTvCasts(mediaId!!)
+        }.value
 
-            if (details is Resource.Error) {
-                ImageItem(
-                    mediaPosterUrl = favoriteFilms!!.favourite.image,
-                    mediaName = favoriteFilms.favourite.title,
-                    mediaReleaseDate = favoriteFilms.favourite.releaseDate,
-                    rating = favoriteFilms.favourite.rating,
-                    genres = favoriteFilms.favourite.genres.replace(oldChar = ',', newChar = ' '),
-                    runTime = favoriteFilms.favourite.runTime,
-                    viewModel = favouritesViewModel,
-                    mediaId = favoriteFilms.favourite.mediaId,
-                    mediaType = "tv",
-                    overview = favoriteFilms.favourite.overview,
-                    casts = casts
-                )
-                OverviewOffline(
-                    overview = favoriteFilms.favourite.overview,
-                    mediaId = favoriteFilms.favourite.mediaId
-                )
-                TopBilledCastSectionItemOffline(mediaId = favoriteFilms.favourite.mediaId)
-            } else {
-                ImageItem(
-                    mediaPosterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
-                    mediaName = details.data?.name.toString(),
-                    mediaReleaseDate = details.data?.firstAirDate.toString(),
-                    rating = details.data?.voteAverage?.toFloat(),
-                    genres = details.data?.genres?.joinToString {
-                        it.name
-                    }.toString(),
-                    runTime = details.data?.episodeRunTime.toString(),
-                    viewModel = favouritesViewModel,
-                    mediaId = details.data?.id ?: mediaId,
-                    mediaType = "tv",
-                    overview = details.data?.overview.toString(),
-                    casts = casts
-                )
-                Overview(
-                    navController,
-                    casts = casts,
-                    overview = details.data?.overview.toString(),
-                    mediaId = mediaId
-                )
-                SectionText(stringResource(R.string.topBilledCast))
-                if (casts is Resource.Success) {
-                    TopBilledCastSectionItem(list = casts.data!!)
+        val review = produceState<Resource<ReviewResponse>>(initialValue = Resource.Loading()) {
+            value = viewModel.getTvReviews(mediaId!!)
+        }.value
+        val recommendation = produceState<Resource<TvResponse>>(initialValue = Resource.Loading()) {
+            value = viewModel.getTvRecommendations(mediaId!!)
+        }.value
+
+        val pagerState = rememberPagerState(initialPage = 0)
+        val listFirstTab = listOf(
+            stringResource(R.string.reviews), stringResource(R.string.discussions)
+        )
+        val favoriteFilms = favouritesViewModel.getFavouritesWithCast(mediaId!!).collectAsState(
+            initial = FavouritesWithCast(
+                favourite = Favourite(
+                    mediaId = mediaId,
+                    mediaType = "",
+                    image = "",
+                    rating = 0f,
+                    favourite = false,
+                    releaseDate = "",
+                    title = "",
+                    runTime = "",
+                    genres = "",
+                    overview = ""
+                ),
+                castLocal = emptyList()
+            )
+        ).value
+
+        LazyColumn(
+            verticalArrangement = Arrangement.SpaceEvenly,
+        ) {
+
+            item {
+
+                if (details is Resource.Error) {
+                    ImageItem(
+                        mediaPosterUrl = favoriteFilms!!.favourite.image,
+                        mediaName = favoriteFilms.favourite.title,
+                        mediaReleaseDate = favoriteFilms.favourite.releaseDate,
+                        rating = favoriteFilms.favourite.rating,
+                        genres = favoriteFilms.favourite.genres.replace(
+                            oldChar = ',',
+                            newChar = ' '
+                        ),
+                        runTime = favoriteFilms.favourite.runTime,
+                        viewModel = favouritesViewModel,
+                        mediaId = favoriteFilms.favourite.mediaId,
+                        mediaType = "tv",
+                        overview = favoriteFilms.favourite.overview,
+                        casts = casts
+                    )
+                    OverviewOffline(
+                        overview = favoriteFilms.favourite.overview,
+                        mediaId = favoriteFilms.favourite.mediaId
+                    )
+                    TopBilledCastSectionItemOffline(mediaId = favoriteFilms.favourite.mediaId)
+                } else {
+                    ImageItem(
+                        mediaPosterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
+                        mediaName = details.data?.name.toString(),
+                        mediaReleaseDate = details.data?.firstAirDate.toString(),
+                        rating = details.data?.voteAverage?.toFloat(),
+                        genres = details.data?.genres?.joinToString {
+                            it.name
+                        }.toString(),
+                        runTime = details.data?.episodeRunTime.toString(),
+                        viewModel = favouritesViewModel,
+                        mediaId = details.data?.id ?: mediaId,
+                        mediaType = "tv",
+                        overview = details.data?.overview.toString(),
+                        casts = casts
+                    )
+                    Overview(
+                        navController,
+                        casts = casts,
+                        overview = details.data?.overview.toString(),
+                        mediaId = mediaId
+                    )
+                    SectionText(stringResource(R.string.topBilledCast))
+                    if (casts is Resource.Success) {
+                        TopBilledCastSectionItem(list = casts.data!!)
+                    }
+                    Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
+                    SectionText(stringResource(R.string.social))
+                    Tabs(pagerState = pagerState, listFirstTab)
+                    if (review is Resource.Success) {
+                        TabsContentForSocial(
+                            pagerState = pagerState,
+                            listFirstTab.size,
+                            review.data!!
+                        )
+                    }
+                    SectionText(stringResource(R.string.recommendations))
+                    if (recommendation is Resource.Success) {
+                        RowRecommendationsItem(recommendation.data!!, navController)
+                    }
+                    Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
                 }
-                Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
-                SectionText(stringResource(R.string.social))
-                Tabs(pagerState = pagerState, listFirstTab)
-                if (review is Resource.Success) {
-                    TabsContentForSocial(pagerState = pagerState, listFirstTab.size, review.data!!)
-                }
-                SectionText(stringResource(R.string.recommendations))
-                if (recommendation is Resource.Success) {
-                    RowRecommendationsItem(recommendation.data!!, navController)
-                }
-                Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
             }
         }
     }
