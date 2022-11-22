@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -44,7 +45,7 @@ private fun ReviewSection(
     review: ReviewResponse?,
 ) {
 
-    LazyColumn(modifier = Modifier.height( dimensionResource(id = R.dimen.height_xxl)))
+    LazyColumn(modifier = Modifier.height(dimensionResource(id = R.dimen.height_xxl)))
     {
         review?.review?.forEach {
             item {
@@ -68,9 +69,12 @@ private fun ReviewSection(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxHeight(1f)
-                            .height( dimensionResource(id = R.dimen.height_medium))
-                            .width( dimensionResource(id = R.dimen.width_medium))
-                            .padding(start =  dimensionResource(id = R.dimen.small_medium_padding), top =  dimensionResource(id = R.dimen.small_medium_padding))
+                            .height(dimensionResource(id = R.dimen.height_medium))
+                            .width(dimensionResource(id = R.dimen.width_medium))
+                            .padding(
+                                start = dimensionResource(id = R.dimen.small_medium_padding),
+                                top = dimensionResource(id = R.dimen.small_medium_padding)
+                            )
                     )
                     Column(
                         modifier = Modifier
@@ -83,7 +87,10 @@ private fun ReviewSection(
                             fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
                             fontSize = 18.sp,
                             modifier = Modifier
-                                .padding(start =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.small_medium_padding))
+                                .padding(
+                                    start = dimensionResource(id = R.dimen.small_padding),
+                                    top = dimensionResource(id = R.dimen.small_medium_padding)
+                                )
                         )
                         Text(
                             text = stringResource(R.string.writtenBy, it.author, date!!),
@@ -91,7 +98,10 @@ private fun ReviewSection(
                             fontFamily = FontFamily(Font(R.font.proximanova_regular)),
                             fontSize = 14.sp,
                             modifier = Modifier
-                                .padding(start =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.xsmall_padding))
+                                .padding(
+                                    start = dimensionResource(id = R.dimen.small_padding),
+                                    top = dimensionResource(id = R.dimen.xsmall_padding)
+                                )
                                 .fillMaxWidth(.8f),
                             softWrap = true,
                         )
@@ -100,7 +110,7 @@ private fun ReviewSection(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(1f)
-                        .height( dimensionResource(id = R.dimen.height_xxl))
+                        .height(dimensionResource(id = R.dimen.height_xxl))
                 ) {
                     Text(
                         text = it.content,
@@ -108,13 +118,29 @@ private fun ReviewSection(
                         fontFamily = FontFamily(Font(R.font.proximanova_regular)),
                         fontSize = 14.sp,
                         modifier = Modifier
-                            .padding(start =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.xsmall_padding))
+                            .padding(
+                                start = dimensionResource(id = R.dimen.small_padding),
+                                top = dimensionResource(id = R.dimen.xsmall_padding)
+                            )
                             .fillMaxWidth(.8f),
                         softWrap = true,
                     )
-                    Spacer(modifier = Modifier.padding(top =  dimensionResource(id = R.dimen.big_padding)))
+                    Spacer(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.big_padding)))
                 }
             }
         }
     }
+}
+
+@Composable
+fun SocialError() {
+    Text(
+        text = "No review available",
+        color = colorResource(R.color.purple_200),
+        textAlign = TextAlign.Start,
+        fontFamily = FontFamily(Font(R.font.proximanova_medium)),
+        fontSize = 18.sp,
+        modifier = Modifier
+            .padding(start = dimensionResource(id = R.dimen.small_padding))
+    )
 }

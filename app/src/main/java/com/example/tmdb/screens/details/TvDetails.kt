@@ -157,13 +157,15 @@ fun TvDetailsScreen(
                     }
                     Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
                     SectionText(stringResource(R.string.social))
-                    Tabs(pagerState = pagerState, listFirstTab)
                     if (review is Resource.Success) {
+                        Tabs(pagerState = pagerState, listFirstTab)
                         TabsContentForSocial(
                             pagerState = pagerState,
                             listFirstTab.size,
                             review.data!!
                         )
+                    } else if (review is Resource.Error) {
+                        SocialError()
                     }
                     SectionText(stringResource(R.string.recommendations))
                     if (recommendation is Resource.Success) {
