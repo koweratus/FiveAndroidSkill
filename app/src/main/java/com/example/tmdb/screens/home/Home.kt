@@ -222,7 +222,7 @@ fun <T : Any> RowSectionItem(
                 .fillMaxWidth()
                 .padding(
                     top = dimensionResource(id = R.dimen.xsmall_padding),
-                    start = dimensionResource(id = R.dimen.small_padding)
+                    //start = dimensionResource(id = R.dimen.small_padding)
                 )
         ) {
             items(

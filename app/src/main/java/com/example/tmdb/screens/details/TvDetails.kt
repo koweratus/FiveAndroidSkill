@@ -196,8 +196,7 @@ private fun RowRecommendationsItem(
                 .wrapContentHeight()
                 .fillMaxWidth()
                 .padding(
-                    top = dimensionResource(id = R.dimen.xsmall_padding),
-                    start = dimensionResource(id = R.dimen.small_padding)
+                    top = dimensionResource(id = R.dimen.xsmall_padding)
                 )
         ) {
             items(

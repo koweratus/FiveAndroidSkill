@@ -1,6 +1,7 @@
 package com.example.tmdb.screens.details.common
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
@@ -44,7 +46,11 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = dimensionResource(id = R.dimen.small_padding), end = dimensionResource(id = R.dimen.small_padding), top = dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.small_padding),
+                    end = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding)
+                )
                 .align(Alignment.CenterHorizontally)
         ) {
             for (i in creditsResponse?.crew!!.take(3)) {
@@ -56,7 +62,11 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = dimensionResource(id = R.dimen.small_padding), end = dimensionResource(id = R.dimen.small_padding), top = dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.small_padding),
+                    end = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding)
+                )
                 .align(Alignment.CenterHorizontally)
         ) {
             for (i in creditsResponse?.crew!!.take(3)) {
@@ -67,7 +77,11 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = dimensionResource(id = R.dimen.small_padding), end = dimensionResource(id = R.dimen.small_padding), top = dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.small_padding),
+                    end = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding)
+                )
                 .align(Alignment.CenterHorizontally)
         ) {
             for (i in creditsResponse?.crew!!.takeLast(3)) {
@@ -78,7 +92,11 @@ fun CastDetails(creditsResponse: CreditsResponse?) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = dimensionResource(id = R.dimen.small_padding), end = dimensionResource(id = R.dimen.small_padding), top = dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.small_padding),
+                    end = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding)
+                )
                 .align(Alignment.CenterHorizontally)
         ) {
             for (i in creditsResponse?.crew!!.takeLast(3)) {
@@ -107,7 +125,10 @@ fun TopBilledCastItem(
 
     Card(
         modifier = Modifier
-            .size(width =dimensionResource(id = R.dimen.width_140), height =dimensionResource(id = R.dimen.height_220))
+            .size(
+                width = dimensionResource(id = R.dimen.width_140),
+                height = dimensionResource(id = R.dimen.height_220)
+            )
             .padding(horizontal = dimensionResource(id = R.dimen.xsmall_padding))
             .clickable(
                 interactionSource = MutableInteractionSource(),
@@ -140,7 +161,11 @@ fun TopBilledCastItem(
                 )
             Text(
                 modifier = Modifier
-                    .padding(top = dimensionResource(id = R.dimen.xsmall_padding), start = dimensionResource(id = R.dimen.xsmall_padding), end = dimensionResource(id = R.dimen.xsmall_padding)),
+                    .padding(
+                        top = dimensionResource(id = R.dimen.xsmall_padding),
+                        start = dimensionResource(id = R.dimen.xsmall_padding),
+                        end = dimensionResource(id = R.dimen.xsmall_padding)
+                    ),
                 text = castName,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.proximanova_xbold)),
@@ -148,16 +173,31 @@ fun TopBilledCastItem(
             )
             Text(
                 modifier = Modifier
-                    .padding(top = dimensionResource(id = R.dimen.xsmall_padding), start = dimensionResource(id = R.dimen.xsmall_padding), end = dimensionResource(id = R.dimen.xsmall_padding)),
+                    .padding(
+                        top = dimensionResource(id = R.dimen.xsmall_padding),
+                        start = dimensionResource(id = R.dimen.xsmall_padding),
+                        end = dimensionResource(id = R.dimen.xsmall_padding)
+                    ),
                 text = castKnownFor,
                 fontSize = 12.sp,
                 fontFamily = FontFamily(Font(R.font.proximanova_regular)),
                 color = Color.Black
             )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.White
+                            ),
+                            startY = 300f
+                        )
+                    )
+            )
         }
     }
-
-
 }
 
 @ExperimentalPagerApi
@@ -169,7 +209,7 @@ fun TopBilledCastSectionItem(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top =  dimensionResource(id = R.dimen.medium_padding))
+            .padding(top = dimensionResource(id = R.dimen.medium_padding))
     ) {
         LazyRow(
             state = rememberLazyListState(),
@@ -177,7 +217,7 @@ fun TopBilledCastSectionItem(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(top =  dimensionResource(id = R.dimen.xsmall_padding), start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding))
+                .padding(top = dimensionResource(id = R.dimen.xsmall_padding))
         ) {
             items(
                 list?.cast!!
@@ -218,7 +258,7 @@ fun TopBilledCastSectionItemOffline(mediaId: Int) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top =  dimensionResource(id = R.dimen.medium_padding))
+            .padding(top = dimensionResource(id = R.dimen.medium_padding))
     ) {
         LazyRow(
             state = rememberLazyListState(),
@@ -226,7 +266,7 @@ fun TopBilledCastSectionItemOffline(mediaId: Int) {
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(top =  dimensionResource(id = R.dimen.xsmall_padding), start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding))
+                .padding(top = dimensionResource(id = R.dimen.xsmall_padding))
         ) {
             items(
                 items = castLocal.castLocal
@@ -268,7 +308,11 @@ fun CastDetailsOffline(mediaId: Int) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.small_padding),
+                    end = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding)
+                )
                 .align(Alignment.CenterHorizontally)
         ) {
             for (i in crewLocal.crewLocal.take(3)) {
@@ -279,7 +323,11 @@ fun CastDetailsOffline(mediaId: Int) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start =  dimensionResource(id = R.dimen.xsmall_padding), end =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.xsmall_padding),
+                    end = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding)
+                )
                 .align(Alignment.CenterHorizontally)
         ) {
             for (i in crewLocal.crewLocal.take(3)) {
@@ -290,7 +338,11 @@ fun CastDetailsOffline(mediaId: Int) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.small_padding),
+                    end = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding)
+                )
                 .align(Alignment.CenterHorizontally)
         ) {
             for (i in crewLocal.crewLocal.takeLast(3)) {
@@ -301,7 +353,11 @@ fun CastDetailsOffline(mediaId: Int) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start =  dimensionResource(id = R.dimen.small_padding), end =  dimensionResource(id = R.dimen.small_padding), top =  dimensionResource(id = R.dimen.small_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.small_padding),
+                    end = dimensionResource(id = R.dimen.small_padding),
+                    top = dimensionResource(id = R.dimen.small_padding)
+                )
                 .align(Alignment.CenterHorizontally)
         ) {
             for (i in crewLocal.crewLocal.takeLast(3)) {
