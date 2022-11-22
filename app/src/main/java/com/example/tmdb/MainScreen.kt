@@ -42,6 +42,7 @@ fun MainScren(navHostController: NavHostController) {
 fun BottomNavigation(navController: NavController) {
     val items = listOf(
         BottomBarScreen.Home,
+        BottomBarScreen.Search,
         BottomBarScreen.Favourites
     )
     BottomNavigation(

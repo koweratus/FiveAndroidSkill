@@ -12,10 +12,14 @@ sealed class BottomBarScreen(
         title = "Home",
         icon = R.drawable.ic_home
     )
-
     object Favourites : BottomBarScreen(
         route = "favourites",
         title = "Favourites",
         icon = R.drawable.ic_favorite
+    )
+    object Search : BottomBarScreen(
+        route = "search",
+        title = "Search",
+        icon = R.drawable.ic_search
     )
 }

@@ -45,7 +45,6 @@ import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.screens.details.DetailsViewModel
 import com.example.tmdb.screens.favourites.FavouritesViewModel
 import com.example.tmdb.screens.widgets.FavoriteButton
-import com.example.tmdb.screens.widgets.SearchAppBar
 import com.example.tmdb.screens.widgets.SectionText
 import com.example.tmdb.screens.widgets.Tabs
 import com.example.tmdb.utils.Constants.IMAGE_BASE_UR
@@ -94,15 +93,6 @@ fun TabScreen(navController: NavController) {
     )
     {
         item {
-            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_40)))
-
-            SearchAppBar(
-                text = "",
-                onTextChange = {},
-                onCloseClicked = { /*TODO*/ },
-                onSearchClicked = {})
-            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.medium_padding)))
-
             SectionText(text = stringResource(R.string.whatsPopular))
             Tabs(pagerState = pagerStateFirstTab, listFirstTab)
             when (pagerStateFirstTab.targetPage) {

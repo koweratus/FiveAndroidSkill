@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.example.tmdb.navigation.BottomBarScreen
 import com.example.tmdb.screens.favourites.FavouritesScreen
 import com.example.tmdb.screens.home.HomeScreen
+import com.example.tmdb.screens.search.SearchScreen
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 @OptIn(ExperimentalPagerApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
@@ -21,6 +22,11 @@ fun BottomBarNavigationGraph(
         }
         composable(BottomBarScreen.Favourites.route) {
             FavouritesScreen(rootNavHostController)
+        }
+        composable(
+            BottomBarScreen.Search.route
+        ) {
+            SearchScreen(navController = rootNavHostController)
         }
 
     }

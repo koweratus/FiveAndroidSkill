@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.example.tmdb.navigation.RootScreen
 import com.example.tmdb.screens.details.MovieDetailsScreen
 import com.example.tmdb.screens.details.TvDetailsScreen
+import com.example.tmdb.screens.search.SearchScreen
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 
