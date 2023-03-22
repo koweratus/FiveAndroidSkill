@@ -53,6 +53,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import com.kova.tmdb.ads.AdBanner
 
 @ExperimentalPagerApi
 @Composable
@@ -87,12 +88,12 @@ fun TabScreen(navController: NavController) {
     )
     val listSecondTab = listOf(stringResource(R.string.movies), stringResource(R.string.tv))
     val listThirdTab = listOf(stringResource(R.string.today), stringResource(R.string.thisWeek))
-
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
     )
     {
         item {
+            AdBanner()
             SectionText(text = stringResource(R.string.whatsPopular))
             Tabs(pagerState = pagerStateFirstTab, listFirstTab)
             when (pagerStateFirstTab.targetPage) {

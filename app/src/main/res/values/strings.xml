@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tmdb</string>
+    <string name="app_name">FilmX</string>
     <string name="streaming">Streaming</string>
     <string name="onTv">On Tv</string>
     <string name="inTheaters">In Theaters</string>
