@@ -1,6 +1,7 @@
 package com.example.tmdb.screens.details
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,10 +37,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.example.tmdb.BottomNavigation
 import com.example.tmdb.R
 import com.example.tmdb.TopBar
 import com.example.tmdb.data.local.Favourite
 import com.example.tmdb.data.local.FavouritesWithCast
+import com.example.tmdb.navigation.BottomBarScreen
 import com.example.tmdb.navigation.RootScreen
 import com.example.tmdb.remote.responses.CreditsResponse
 import com.example.tmdb.remote.responses.MovieDetails
@@ -52,7 +55,9 @@ import com.example.tmdb.screens.widgets.Tabs
 import com.example.tmdb.utils.Constants
 import com.example.tmdb.utils.Resource
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import com.kova.tmdb.utils.NetworkUtil
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalPagerApi
@@ -108,77 +113,119 @@ fun MovieDetailsScreen(
         ) {
             item {
                 if (details is Resource.Error) {
-                    ImageItem(
-                        mediaPosterUrl = favoriteFilms.favourite.image,
-                        mediaName = favoriteFilms.favourite.title,
-                        mediaReleaseDate = favoriteFilms.favourite.releaseDate,
-                        rating = favoriteFilms.favourite.rating,
-                        genres = favoriteFilms.favourite.genres.replace(
-                            oldChar = ',',
-                            newChar = ' '
-                        ),
-                        runTime = favoriteFilms.favourite.runTime,
-                        viewModel = favouritesViewModel,
-                        mediaId = favoriteFilms.favourite.mediaId,
-                        mediaType = "movie",
-                        overview = favoriteFilms.favourite.overview,
-                        casts = casts
-                    )
-                    OverviewOffline(
-                        overview = favoriteFilms.favourite.overview,
-                        mediaId = favoriteFilms.favourite.mediaId
-                    )
-                    TopBilledCastSectionItemOffline(mediaId = favoriteFilms.favourite.mediaId)
-
+                    Toast.makeText(
+                        LocalContext.current,
+                        details.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
-                    ImageItem(
-                        mediaPosterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
-                        mediaName = details.data?.title.toString(),
-                        mediaReleaseDate = details.data?.releaseDate.toString(),
-                        rating = details.data?.voteAverage?.toFloat(),
-                        genres = details.data?.genres?.joinToString {
-                            it.name
-                        }.toString(),
-                        runTime = details.data?.runtime.toString(),
-                        viewModel = favouritesViewModel,
-                        mediaId = details.data?.id ?: mediaId,
-                        mediaType = "movie",
-                        overview = details.data?.overview.toString(),
-                        casts = casts
-                    )
-                    Overview(
-                        navController,
-                        casts = casts,
-                        overview = details.data?.overview.toString(),
-                        mediaId = mediaId
-                    )
-
-                    SectionText(stringResource(R.string.topBilledCast))
-                    if (casts is Resource.Success) {
-                        TopBilledCastSectionItem(list = casts.data!!)
-                    }
-                    Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
-                    SectionText(stringResource(R.string.social))
-                    if (review is Resource.Success) {
-                        Tabs(pagerState = pagerState, listFirstTab)
-                        TabsContentForSocial(
-                            pagerState = pagerState,
-                            listFirstTab.size,
-                            review.data
+                    when(NetworkUtil.isNetworkAvailable(LocalContext.current)){
+                        true -> OnlineMovieDetails(
+                            details,
+                            favouritesViewModel,
+                            mediaId,
+                            casts,
+                            navController,
+                            review,
+                            pagerState,
+                            listFirstTab,
+                            recommendation
                         )
-                    }else if (review is Resource.Error){
-                        SocialError()
+                        false -> OfflineMovieDetails(favoriteFilms, favouritesViewModel, casts)
                     }
-                    SectionText(stringResource(R.string.recommendations))
-                    if (recommendation is Resource.Success) {
-                        recommendation.data?.let { it1 -> RowRecommendationsItem(it1, navController) }
-                    }
-                    Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
                 }
 
             }
         }
     }
+}
+
+@ExperimentalPagerApi
+@Composable
+private fun OnlineMovieDetails(
+    details: Resource<MovieDetails>,
+    favouritesViewModel: FavouritesViewModel,
+    mediaId: Int,
+    casts: Resource<CreditsResponse>,
+    navController: NavController,
+    review: Resource<ReviewResponse>,
+    pagerState: PagerState,
+    listFirstTab: List<String>,
+    recommendation: Resource<MoviesResponse>
+) {
+    ImageItem(
+        mediaPosterUrl = "${Constants.IMAGE_BASE_UR}/${details.data?.posterPath}",
+        mediaName = details.data?.title.toString(),
+        mediaReleaseDate = details.data?.releaseDate.toString(),
+        rating = details.data?.voteAverage?.toFloat(),
+        genres = details.data?.genres?.joinToString {
+            it.name
+        }.toString(),
+        runTime = details.data?.runtime.toString(),
+        viewModel = favouritesViewModel,
+        mediaId = details.data?.id ?: mediaId,
+        mediaType = "movie",
+        overview = details.data?.overview.toString(),
+        casts = casts
+    )
+    Overview(
+        navController,
+        casts = casts,
+        overview = details.data?.overview.toString(),
+        mediaId = mediaId
+    )
+
+    SectionText(stringResource(R.string.topBilledCast))
+    if (casts is Resource.Success) {
+        TopBilledCastSectionItem(list = casts.data!!)
+    }
+    Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
+    SectionText(stringResource(R.string.social))
+    if (review is Resource.Success) {
+        Tabs(pagerState = pagerState, listFirstTab)
+        TabsContentForSocial(
+            pagerState = pagerState,
+            listFirstTab.size,
+            review.data
+        )
+    } else if (review is Resource.Error) {
+        SocialError()
+    }
+    SectionText(stringResource(R.string.recommendations))
+    if (recommendation is Resource.Success) {
+        recommendation.data?.let { it1 -> RowRecommendationsItem(it1, navController) }
+    }
+    Spacer(Modifier.padding(dimensionResource(id = R.dimen.spacer_value)))
+}
+
+@ExperimentalPagerApi
+@Composable
+private fun OfflineMovieDetails(
+    favoriteFilms: FavouritesWithCast,
+    favouritesViewModel: FavouritesViewModel,
+    casts: Resource<CreditsResponse>
+) {
+    ImageItem(
+        mediaPosterUrl = favoriteFilms.favourite.image,
+        mediaName = favoriteFilms.favourite.title,
+        mediaReleaseDate = favoriteFilms.favourite.releaseDate,
+        rating = favoriteFilms.favourite.rating,
+        genres = favoriteFilms.favourite.genres.replace(
+            oldChar = ',',
+            newChar = ' '
+        ),
+        runTime = favoriteFilms.favourite.runTime,
+        viewModel = favouritesViewModel,
+        mediaId = favoriteFilms.favourite.mediaId,
+        mediaType = "movie",
+        overview = favoriteFilms.favourite.overview,
+        casts = casts
+    )
+    OverviewOffline(
+        overview = favoriteFilms.favourite.overview,
+        mediaId = favoriteFilms.favourite.mediaId
+    )
+    TopBilledCastSectionItemOffline(mediaId = favoriteFilms.favourite.mediaId)
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package com.example.tmdb.screens.search
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,6 +42,7 @@ import coil.request.ImageRequest
 import com.example.tmdb.navigation.RootScreen
 import com.example.tmdb.utils.Constants
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SearchScreen(navController: NavController) {
     val viewModel: SearchViewModel = hiltViewModel()
@@ -65,7 +67,6 @@ private fun SearchList(
     val actorsList = viewModel.searchSearch.value.collectAsLazyPagingItems()
     LazyColumn(
     ) {
-
         items(actorsList) { item ->
             (item?.name ?: item?.title)?.let {
                 item?.id?.let { it1 ->

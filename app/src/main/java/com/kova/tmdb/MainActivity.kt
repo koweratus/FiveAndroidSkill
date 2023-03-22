@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.navigation.compose.rememberNavController
 import com.example.tmdb.ui.theme.TmdbTheme
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +20,6 @@ class MainActivity : ComponentActivity() {
             TmdbTheme {
                 val navController = rememberNavController()
                 RootNavigationGraph(rootNavHostController = navController)
-
             }
         }
     }
