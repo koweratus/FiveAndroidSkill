@@ -8,6 +8,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -29,7 +30,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.R
@@ -217,7 +217,7 @@ fun <T : Any> RowSectionItem(
                 )
         ) {
             items(
-                items = list
+                items = list.itemSnapshotList
             ) { item ->
                 if (item is Movie) {
                     navController?.let { RowItem(media = item, it, route, type) }
@@ -257,8 +257,6 @@ fun RowItem(
             )
             .padding(horizontal = dimensionResource(id = R.dimen.xsmall_padding))
             .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = rememberRipple(bounded = true, color = Color.Black),
                 onClick = {
                     navController.navigate("$route/${media.id}")
                 }

@@ -19,6 +19,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -119,7 +120,7 @@ fun MovieDetailsScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
-                    when(NetworkUtil.isNetworkAvailable(LocalContext.current)){
+                    when (NetworkUtil.isNetworkAvailable(LocalContext.current)) {
                         true -> OnlineMovieDetails(
                             details,
                             favouritesViewModel,
@@ -131,6 +132,7 @@ fun MovieDetailsScreen(
                             listFirstTab,
                             recommendation
                         )
+
                         false -> OfflineMovieDetails(favoriteFilms, favouritesViewModel, casts)
                     }
                 }
@@ -281,8 +283,6 @@ private fun RowItemRecommendations(
                 )
                 .padding(horizontal = dimensionResource(id = R.dimen.xsmall_padding))
                 .clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = rememberRipple(bounded = true, color = Color.Black),
                     onClick = {
                         navController.navigate("${RootScreen.MovieDetails.route}/$id")
                     }

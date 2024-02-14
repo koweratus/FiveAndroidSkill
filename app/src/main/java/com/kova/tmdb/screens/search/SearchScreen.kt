@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -36,7 +37,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.tmdb.navigation.RootScreen
@@ -67,7 +67,7 @@ private fun SearchList(
     val actorsList = viewModel.searchSearch.value.collectAsLazyPagingItems()
     LazyColumn(
     ) {
-        items(actorsList) { item ->
+        items(actorsList.itemSnapshotList) { item ->
             (item?.name ?: item?.title)?.let {
                 item?.id?.let { it1 ->
                     if (item?.mediaType == "tv") {
@@ -167,8 +167,6 @@ fun SearchItem(
                 vertical = dimensionResource(id = com.example.tmdb.R.dimen.xsmall_padding)
             )
             .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = rememberRipple(bounded = true, color = Color.Black),
                 onClick = {
                     navController.navigate("$route/${id}")
                 }

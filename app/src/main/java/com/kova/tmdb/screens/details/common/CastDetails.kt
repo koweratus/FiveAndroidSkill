@@ -131,8 +131,6 @@ fun TopBilledCastItem(
             )
             .padding(horizontal = dimensionResource(id = R.dimen.xsmall_padding))
             .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = rememberRipple(bounded = true, color = Color.Black),
                 onClick = { //navController.navigate(BottomBarScreen.Details.route)
                 }
             ),

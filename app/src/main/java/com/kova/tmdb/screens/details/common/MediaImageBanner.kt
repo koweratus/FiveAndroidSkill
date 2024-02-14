@@ -54,11 +54,6 @@ fun ImageItem(
     Card(
         modifier = Modifier
             .fillMaxSize(1f)
-            .clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = rememberRipple(bounded = true, color = Color.Black),
-                onClick = { }
-            )
             .height( dimensionResource(id = R.dimen.height_xl)),
         elevation =  dimensionResource(id = R.dimen.xsmall_padding)
     ) {
